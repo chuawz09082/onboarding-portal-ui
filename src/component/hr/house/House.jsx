@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Button, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { selectHouseList } from "../../../redux/hr/house/house.selector";
-import getHouseListThunk from "../../../redux/hr/house/house.thunk";
+import { getHouseListThunk } from "../../../redux/hr/house/house.thunk";
 import "./House.css";
 
 const House = () => {

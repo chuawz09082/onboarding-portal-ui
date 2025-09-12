@@ -1,17 +1,19 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css';
-import House from './component/hr/house/House';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
+import House from "./component/hr/house/House";
 
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import PersonalInfo from './pages/PersonalInfo';
-import Onboarding from './pages/Onboarding';
-import PrivateRoute from './components/PrivateRoute';
-import './App.css';
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import "./App.css";
+import AddHouse from "./component/hr/add-house/AddHouse";
+import PrivateRoute from "./components/PrivateRoute";
+import Login from "./pages/Login";
+import Onboarding from "./pages/Onboarding";
+import PersonalInfo from "./pages/PersonalInfo";
+import Register from "./pages/Register";
 
-
-function AdminPage() { return <div>Admin page</div>; }
+function AdminPage() {
+  return <div>Admin page</div>;
+}
 
 export default function App() {
   return (
@@ -23,8 +25,8 @@ export default function App() {
         {/* Public */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path='/house' element={<House />} />
-
+        <Route path="/house" element={<House />} />
+        <Route path="/house-add" element={<AddHouse />} />
         {/* Protected (everything inside requires login) */}
         <Route element={<PrivateRoute />}>
           <Route path="/onboarding" element={<Onboarding />} />
