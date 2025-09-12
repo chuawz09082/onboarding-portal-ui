@@ -1,8 +1,7 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import './App.css';
+import House from './component/hr/house/House';
 
 function App() {
 
@@ -11,6 +10,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/admin" element={<div>Admin page</div>} />
+          <Route path='/house' element={<House />} />
           <Route exact path="/" element={<div>Client Page</div>} />
         </Routes>
       </BrowserRouter>

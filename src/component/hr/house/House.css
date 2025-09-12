@@ -1,0 +1,23 @@
+.table td, .table th {
+    padding: .75rem;
+    border-top: 1px solid #dee2e6;
+}
+.btn-add{
+    background-color: #0A5695;
+    border: 0;
+    border-radius: 0%;
+}
+.btn-view{
+    border-radius: 0%;
+}
+.btn-edit{
+    border-radius: 0%;
+}
+.btn-delete{
+    border-radius: 0%;
+}
+
+.col-style {
+    max-width: 5%;
+    vertical-align: middle;
+}
