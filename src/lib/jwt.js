@@ -1,6 +1,14 @@
 export function getToken() {
     return sessionStorage.getItem('access_token') || null;
   }
+
+  export function getUsernameFromToken(token) {
+    try { return (parseJwt(token || '')?.sub) || ''; } catch { return ''; }
+  }
+  
+  export function getUsername() {
+    return getUsernameFromToken(getToken());
+  }
   
   export function parseJwt(token) {
     try {

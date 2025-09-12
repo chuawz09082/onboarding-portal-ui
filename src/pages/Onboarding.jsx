@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import HROnly from '../components/HROnly';
-import { getToken, isHR } from '../lib/jwt';
+import { getToken, isHR,getUsername } from '../lib/jwt';
 import API from '../lib/http';
 import { useDispatch } from 'react-redux';
 import { logout } from '../redux/store/authSlice';
+import '../App.css';
 
 export default function Onboarding() {
   const nav = useNavigate();
   const dispatch = useDispatch();
+  const username = getUsername();
+
 function doLogout() {
   dispatch(logout());
   nav('/login', { replace: true });
@@ -24,17 +27,21 @@ function doLogout() {
   }, [nav]);
 
   return (
-    <div style={{ maxWidth: 700, margin: '3rem auto' }}>
-    <button onClick={doLogout} style={{ float:'right' }}>Logout</button>
-      <h2>Onboarding</h2>
-      <p>Protected area. Replace this with your form.</p>
+    <div className="auth-layout">
+      <div className="auth-card">
+        <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:12}}>
+          <h1 style={{margin:0, fontSize:36, lineHeight:1.1}}>Onboarding</h1>
+          <button className="auth-button" onClick={doLogout} style={{width:'auto', padding:'8px 12px'}}>Logout</button>
+        </div>
+        <p style={{color:'#666', marginTop:0}}>Welcome! This is the HR personal info page for <strong>{username || 'user'}</strong>.</p>
 
-      <hr style={{ margin: '2rem 0' }} />
+        <hr style={{ margin: '16px 0', border: 0, borderTop: '1px solid #eee' }} />
 
-      <HROnly fallback={null}>
-        <HRTools />
-      </HROnly>
-
+        {/* HR-only */}
+        <HROnly fallback={null}>
+          <HRTools />
+        </HROnly>
+      </div>
     </div>
   );
 }
@@ -59,9 +66,7 @@ function HRTools() {
       else if (r.status === 401) { sessionStorage.removeItem('access_token'); window.location.href = '/login'; }
       else if (r.status === 403) setErr('Forbidden: you do not have HR permissions.');
       else setErr(`${r.status} ${r.statusText}\n${r.data || ''}`);
-    } finally {
-      setBusy(false);
-    }
+    } finally { setBusy(false); }
   }
 
   async function copyLink() {
@@ -70,21 +75,45 @@ function HRTools() {
   }
 
   return (
-    <div style={{ padding: '1rem', border: '1px solid #ddd', borderRadius: 8 }}>
-      <h3>HR Tools: Generate registration link</h3>
-      <p style={{ color: '#666' }}>Optional email to prefill the invite.</p>
-      <input value={email} onChange={e => setEmail(e.target.value)}
-             placeholder="newhire@example.com" style={{ padding: '.5rem', marginRight: '.5rem', width: '60%' }} />
-      <button onClick={genLink} disabled={busy}>{busy ? 'Creating…' : 'Create registration link'}</button>
-      {err && <p style={{ color: 'crimson', marginTop: '1rem' }}>{err}</p>}
-      {out && <>
-        <p style={{ marginTop: '1rem' }}>Link:</p>
-        <pre style={{ background: '#f6f8fa', padding: '.75rem', borderRadius: 8, overflow: 'auto' }}>{out}</pre>
-        <button onClick={copyLink}>Copy</button>
-      </>}
-    </div>
+    <section>
+      <h3 style={{margin:'8px 0 6px'}}>HR Tools: Generate registration link</h3>
+      <p style={{ color:'#666', marginTop:0 }}>Optional email to prefill the invite.</p>
+
+      <div style={{ display:'flex', gap:8, alignItems:'center' }}>
+        <input
+          className="auth-input"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          placeholder="newhire@example.com"
+          style={{ margin:0 }}
+        />
+        <button className="auth-button" onClick={genLink} disabled={busy} style={{ width:'auto', whiteSpace:'nowrap' }}>
+          {busy ? 'Creating…' : 'Create registration link'}
+        </button>
+      </div>
+
+      {err && <p style={{ color:'crimson', marginTop:10 }}>{err}</p>}
+
+      {out && (
+        <>
+          <p style={{ marginTop:12 }}>Link:</p>
+          <pre style={{ background:'#f6f8fa', padding:'.75rem', borderRadius:8, overflow:'auto' }}>
+            <a href={out} target="_blank" rel="noreferrer">{out}</a>
+          </pre>
+          <button className="auth-button" onClick={copyLink} style={{ width:'auto' }}>Copy</button>
+        </>
+      )}
+    </section>
   );
+
+
 }
+
+
+
+
+
+
 
 
 
