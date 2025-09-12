@@ -1,9 +1,14 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css';
+import House from './component/hr/house/House';
+
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import PersonalInfo from './pages/PersonalInfo';
 import Onboarding from './pages/Onboarding';
 import PrivateRoute from './components/PrivateRoute';
+
 
 function AdminPage() { return <div>Admin page</div>; }
 
@@ -17,6 +22,7 @@ export default function App() {
         {/* Public */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path='/house' element={<House />} />
 
         {/* Protected (everything inside requires login) */}
         <Route element={<PrivateRoute />}>
@@ -31,139 +37,3 @@ export default function App() {
     </BrowserRouter>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
