@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Button, Card, Table } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { addHouseThunk } from "../../../redux/hr/house/house.thunk";
-import "./AddHouse.css";
 
 const facilityTypes = ["Bed", "Mattress", "Table", "Chair"];
 
@@ -46,7 +45,6 @@ const AddHouse = () => {
   };
 
   const handleSubmit = () => {
-    // Make sure quantity is a number
     const payload = {
       ...house,
       maxOccupant: Number(house.maxOccupant),

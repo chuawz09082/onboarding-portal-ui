@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import Axios from "axios";
 
-const getHouseListThunk = createAsyncThunk(
+export const getHouseListThunk = createAsyncThunk(
   "house/getHouseListThunk",
   async () => {
     const { data } = await Axios.get("http://localhost:8084/api/v1/houses");
@@ -9,4 +9,13 @@ const getHouseListThunk = createAsyncThunk(
   }
 );
 
-export default getHouseListThunk;
+export const addHouseThunk = createAsyncThunk(
+  "house/addHouseThunk",
+  async (house) => {
+    const result = await Axios.post(
+      "http://localhost:8084/api/v1/houses",
+      house
+    );
+    return result;
+  }
+);
