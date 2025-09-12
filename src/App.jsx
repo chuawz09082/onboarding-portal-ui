@@ -4,6 +4,8 @@ import Register from './pages/Register';
 import PersonalInfo from './pages/PersonalInfo';
 import Onboarding from './pages/Onboarding';
 import PrivateRoute from './components/PrivateRoute';
+import './App.css';
+
 
 function AdminPage() { return <div>Admin page</div>; }
 
