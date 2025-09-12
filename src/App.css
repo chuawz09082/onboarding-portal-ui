@@ -1,0 +1,64 @@
+/* Force light theme */
+:root { color-scheme: light; }
+
+/* Make the app fill the viewport and kill the Vite template centering */
+html, body, #root { height: 100%; min-height: 100%; }
+#root {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  text-align: initial;
+  background: #f4f6fb;
+  color: #222;
+}
+
+/* Center the auth views */
+.auth-layout {
+  min-height: 100vh;        /* full viewport height */
+  width: 100vw;             /* full viewport width */
+  display: flex;
+  align-items: center;      /* vertical center */
+  justify-content: center;  /* horizontal center */
+  padding: 24px;            /* page breathing room */
+}
+
+/* Larger card */
+.auth-card {
+  width: 100%;
+  max-width: 560px;         /* <-- bigger */
+  background: #fff;
+  padding: 28px 32px;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.08);
+}
+
+/* Inputs: white bg, black text */
+.auth-input {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 12px 14px;
+  border: 1px solid #cfd4dc;
+  border-radius: 10px;
+  background: #fff;         /* white box */
+  color: #111;              /* black text */
+  font-size: 16px;
+  outline: none;
+}
+.auth-input::placeholder { color: #8b8f97; }
+.auth-input:focus { border-color: #4f46e5; box-shadow: 0 0 0 3px rgba(79,70,229,.15); }
+
+/* Button */
+.auth-button {
+  width: 100%;
+  padding: 12px 14px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background: #4f46e5;      /* indigo */
+  color: #fff;
+  font-weight: 700;
+  margin-top: 6px;
+}
+.auth-button:hover { filter: brightness(.95); }
+
