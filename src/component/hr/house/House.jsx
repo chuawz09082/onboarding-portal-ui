@@ -2,7 +2,10 @@ import { useEffect } from "react";
 import { Button, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { selectHouseList } from "../../../redux/hr/house/house.selector";
-import { getHouseListThunk } from "../../../redux/hr/house/house.thunk";
+import {
+  deleteHouseThunk,
+  getHouseListThunk,
+} from "../../../redux/hr/house/house.thunk";
 import "./House.css";
 
 const House = () => {
@@ -15,6 +18,14 @@ const House = () => {
 
   const response = useSelector(selectHouseList) || [];
   data = response.data || [];
+
+  const handleDelete = (id) => {
+    console.log("Deleting house with id:", id);
+    dispatch(deleteHouseThunk(id)).then(() => {
+      alert("House deleted successfully!");
+      dispatch(getHouseListThunk());
+    });
+  };
 
   const body = data.map((data) => (
     <tbody key={data.id}>
@@ -76,7 +87,7 @@ const House = () => {
           <Button
             className="btn-delete mr-1"
             variant="danger"
-            // onClick={(id) => this.handleDelete(data.id)}
+            onClick={() => handleDelete(data.id)}
           >
             Delete
           </Button>

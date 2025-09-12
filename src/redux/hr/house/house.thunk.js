@@ -12,10 +12,17 @@ export const getHouseListThunk = createAsyncThunk(
 export const addHouseThunk = createAsyncThunk(
   "house/addHouseThunk",
   async (house) => {
-    const result = await Axios.post(
+    const { data } = await Axios.post(
       "http://localhost:8084/api/v1/houses",
       house
     );
-    return result;
+    return data;
+  }
+);
+
+export const deleteHouseThunk = createAsyncThunk(
+  "house/deleteHouseThunk",
+  async (id) => {
+    await Axios.delete("http://localhost:8084/api/v1/houses/" + id);
   }
 );
