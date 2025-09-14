@@ -1,80 +1,14 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Breadcrumb from './Breadcrumb';
+import { employeesData } from '../data/employeesData';
 
-const EmployeeList = ({ onSelectEmployee }) => {
+const EmployeeList = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
-
-  // Sample employee data on the schema
-  const employeesData = [
-    {
-      id: 'emp_001',
-      employee_id: 'mongo_emp_001',
-      first_name: 'Sarah',
-      last_name: 'Johnson',
-      preferred_name: 'Sarah',
-      email: 'sarah.johnson@company.com',
-      cell_phone: '+1-555-0123',
-      position: 'Team Manager',
-      department: 'Engineering',
-      start_date: '2022-01-10',
-      address: [
-        {
-          address_line1: '123 Main Street',
-          city: 'San Francisco',
-          state: 'CA',
-        },
-      ],
-      visa_status: [{ visa_type: 'H1B', active_flag: true }],
-    },
-    {
-      id: 'emp_002',
-      employee_id: 'mongo_emp_002',
-      first_name: 'Michael',
-      last_name: 'Chen',
-      preferred_name: 'Mike',
-      email: 'michael.chen@company.com',
-      cell_phone: '+1-555-0124',
-      position: 'Software Engineer',
-      department: 'Engineering',
-      start_date: '2023-03-15',
-      address: [
-        { address_line1: '456 Oak Ave', city: 'Palo Alto', state: 'CA' },
-      ],
-      visa_status: [{ visa_type: 'H1B', active_flag: true }],
-    },
-    {
-      id: 'emp_003',
-      employee_id: 'mongo_emp_003',
-      first_name: 'Emily',
-      last_name: 'Rodriguez',
-      preferred_name: 'Emily',
-      email: 'emily.rodriguez@company.com',
-      cell_phone: '+1-555-0125',
-      position: 'Product Designer',
-      department: 'Design',
-      start_date: '2021-08-22',
-      address: [
-        { address_line1: '789 Pine St', city: 'San Jose', state: 'CA' },
-      ],
-      visa_status: [{ visa_type: 'Green Card', active_flag: true }],
-    },
-    {
-      id: 'emp_004',
-      employee_id: 'mongo_emp_004',
-      first_name: 'David',
-      last_name: 'Kim',
-      preferred_name: 'David',
-      email: 'david.kim@company.com',
-      cell_phone: '+1-555-0126',
-      position: 'Data Analyst',
-      department: 'Analytics',
-      start_date: '2020-11-01',
-      address: [
-        { address_line1: '321 Cedar Rd', city: 'Mountain View', state: 'CA' },
-      ],
-      visa_status: [{ visa_type: 'F1 OPT', active_flag: true }],
-    },
-  ];
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(employeesData.length);
+  const initialItemsPerPage = employeesData.length;
 
   // Breadcrumb items for employee list
   const breadcrumbItems = [{ label: 'Employees', href: '/employee' }];
@@ -85,6 +19,17 @@ const EmployeeList = ({ onSelectEmployee }) => {
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
   );
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredEmployees.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentEmployees = filteredEmployees.slice(startIndex, endIndex);
+
+  // Reset to first page when search term changes
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
 
   const getInitials = (firstName, lastName) => {
     return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
@@ -115,6 +60,29 @@ const EmployeeList = ({ onSelectEmployee }) => {
             <h1 className="text-2xl font-bold text-gray-900">
               {filteredEmployees.length} Employees
             </h1>
+            <p className="text-sm text-gray-600 mt-1">
+              Showing {startIndex + 1}-{Math.min(endIndex, filteredEmployees.length)} of {filteredEmployees.length} employees
+            </p>
+          </div>
+          <div className="flex items-center space-x-4">
+            <label className="text-sm font-medium text-gray-700">Items per page:</label>
+            <select
+              value={itemsPerPage === initialItemsPerPage ? 'all' : itemsPerPage.toString()}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value === 'all') {
+                  setItemsPerPage(initialItemsPerPage);
+                } else {
+                  setItemsPerPage(Number(value));
+                }
+                setCurrentPage(1);
+              }}
+              className="border text-gray-700 border-gray-300 rounded-md px-3 py-1 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="all">All ({initialItemsPerPage})</option>
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+            </select>
           </div>
         </div>
         {/* Search Bar */}
@@ -145,7 +113,7 @@ const EmployeeList = ({ onSelectEmployee }) => {
         <br />
         {/* Employee Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredEmployees.map((employee) => (
+          {currentEmployees.map((employee) => (
             <div
               key={employee.id}
               className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow"
@@ -227,7 +195,7 @@ const EmployeeList = ({ onSelectEmployee }) => {
 
                 {/* Action Button */}
                 <button
-                  onClick={() => onSelectEmployee(employee)}
+                  onClick={() => navigate(`/employee/${employee.id}`)}
                   className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   View Details
@@ -261,6 +229,78 @@ const EmployeeList = ({ onSelectEmployee }) => {
                 ? 'Try adjusting your search term.'
                 : 'No employees have been added yet.'}
             </p>
+          </div>
+        )}
+
+        {/* Pagination Controls */}
+        {filteredEmployees.length > 0 && totalPages > 1 && (
+          <div className="bg-white rounded-lg shadow-sm p-6 mt-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => setCurrentPage(1)}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 text-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  First
+                </button>
+                <button
+                  onClick={() => setCurrentPage(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 text-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Previous
+                </button>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                  // Show first page, last page, current page, and pages around current page
+                  if (
+                    page === 1 ||
+                    page === totalPages ||
+                    (page >= currentPage - 1 && page <= currentPage + 1)
+                  ) {
+                    return (
+                      <button
+                        key={page}
+                        onClick={() => setCurrentPage(page)}
+                        className={`px-4 py-2 rounded-lg transition-colors ${
+                          currentPage === page
+                            ? 'bg-blue-600 text-white hover:bg-blue-700'
+                            : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50'
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    );
+                  } else if (
+                    page === currentPage - 2 ||
+                    page === currentPage + 2
+                  ) {
+                    return <span key={page} className="px-2 text-gray-500">...</span>;
+                  }
+                  return null;
+                })}
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => setCurrentPage(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 text-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Next
+                </button>
+                <button
+                  onClick={() => setCurrentPage(totalPages)}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 text-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Last
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>

@@ -83,6 +83,7 @@ export default function App() {
             {/* Teammate’s new pages */}
             <Route path="/home" element={<Home />} />
             <Route path="/employee" element={<Employee />} />
+            <Route path="/employee/:id" element={<EmployeeDetail />} />
             <Route path="/application" element={<Application />} />
             <Route path="/housing" element={<Housing />} />
           </Route>

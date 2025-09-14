@@ -10,6 +10,7 @@ function Breadcrumb({ items }) {
     <nav className="flex items-center space-x-2 text-sm text-gray-600">
       {items.map((item, index) => (
         <div key={index} className="flex items-center space-x-2">
+          {index > 0 && <span className="text-gray-400">{'>'}</span>}
           {item.href ? (
             <Link
               to={item.href}
@@ -20,7 +21,6 @@ function Breadcrumb({ items }) {
           ) : (
             <span className="text-gray-900 font-medium">{item.label}</span>
           )}
-          {index > 0 && <span className="text-gray-400">{'>'}</span>}
         </div>
       ))}
     </nav>
