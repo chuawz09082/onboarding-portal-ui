@@ -52,21 +52,42 @@ function HRTools() {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
 
+  const emailOk = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+
   async function genLink() {
+    const e = email.trim();
+
+    // front-end validation so we never show a link for errors
+    if (!e) { setErr('Email is required'); setOut(''); return; }
+    if (!emailOk(e)) { setErr('Invalid email'); setOut(''); return; }
+
     try {
       setBusy(true);
       setErr('');
       setOut('');
       const r = await API.post('/hr/registration-token', null, {
-        params: email.trim() ? { email: email.trim() } : {},
+        params: { email: e },
         responseType: 'text',
         validateStatus: () => true
       });
-      if (r.status === 200) setOut(r.data);
-      else if (r.status === 401) { sessionStorage.removeItem('access_token'); window.location.href = '/login'; }
-      else if (r.status === 403) setErr('Forbidden: you do not have HR permissions.');
-      else setErr(`${r.status} ${r.statusText}\n${r.data || ''}`);
-    } finally { setBusy(false); }
+
+      if (r.status === 200) {
+        setOut(r.data);                // success → show link below
+      } else if (r.status === 401) {
+        sessionStorage.removeItem('access_token');
+        window.location.href = '/login';
+      } else if (r.status === 403) {
+        setErr('Forbidden: you do not have HR permissions.');
+      } else {
+        // prefer server message; fall back to generic
+        const msg = (typeof r.data === 'string' && r.data.trim())
+          ? r.data.trim()
+          : 'Something went wrong. Please try again.';
+        setErr(msg);                   // error → red text only
+      }
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function copyLink() {
@@ -77,11 +98,12 @@ function HRTools() {
   return (
     <section>
       <h3 style={{margin:'8px 0 6px'}}>HR Tools: Generate registration link</h3>
-      <p style={{ color:'#666', marginTop:0 }}>Optional email to prefill the invite.</p>
+      <p style={{ color:'#666', marginTop:0 }}>Email required for the invite.</p>
 
       <div style={{ display:'flex', gap:8, alignItems:'center' }}>
         <input
           className="auth-input"
+          type="email"
           value={email}
           onChange={e => setEmail(e.target.value)}
           placeholder="newhire@example.com"
@@ -105,10 +127,7 @@ function HRTools() {
       )}
     </section>
   );
-
-
 }
-
 
 
 
