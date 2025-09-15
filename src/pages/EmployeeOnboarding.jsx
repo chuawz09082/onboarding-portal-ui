@@ -34,10 +34,12 @@ function makeDefaultAvatarDataUrl(seedText, labelText = '') {
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 }
 
+
 export default function EmployeeOnboarding() {
   const nav = useNavigate();
   const dispatch = useDispatch();
   const username = getUsername();
+
 
   const [form, setForm] = useState({
     firstName: '', lastName: '', middleName: '', preferredName: '',
@@ -76,6 +78,7 @@ export default function EmployeeOnboarding() {
     dispatch(logout());
     nav('/login', { replace: true });
   }
+
 
   // ---- Fetch email from DB first, then userinfo, then local fallback ----
   useEffect(() => {
@@ -118,11 +121,13 @@ export default function EmployeeOnboarding() {
     })();
   }, [nav]);
 
+
   // Clean up object URLs
   useEffect(() => () => { if (avatarPreview) URL.revokeObjectURL(avatarPreview); }, [avatarPreview]);
 
   // helpers
   function setField(name, value) { setForm(f => ({ ...f, [name]: value })); }
+
   function setNested(path, value) {
     setForm(f => {
       const copy = { ...f };
@@ -134,12 +139,14 @@ export default function EmployeeOnboarding() {
     });
   }
 
+
   const phoneOk = (p) => p && p.replace(/\D/g, '').length >= 10;
 
   function validate() {
     if (!form.firstName.trim()) return 'First name is required';
     if (!form.lastName.trim()) return 'Last name is required';
     if (!form.email.trim()) return 'Email is required';
+
     if (!emailRegex.test(form.email)) return 'Email looks invalid';
     if (!form.cellPhone.trim()) return 'Cell phone is required';
     if (!phoneOk(form.cellPhone)) return 'Cell phone looks invalid';
@@ -151,6 +158,7 @@ export default function EmployeeOnboarding() {
       if (form.workAuth === 'OTHER' && !form.workAuthOther.trim()) return 'Specify work authorization';
       if (!form.workAuthStart) return 'Work authorization start date required';
       if (!form.workAuthEnd) return 'Work authorization end date required';
+
       if (!workAuthFile) return 'Upload your work authorization document';
     }
 
@@ -167,6 +175,7 @@ export default function EmployeeOnboarding() {
 
   async function saveDraft(e) {
     e.preventDefault();
+
     setErr(''); setOk('');
     const v = validate(); if (v) { setErr(v); return; }
 
@@ -252,6 +261,7 @@ export default function EmployeeOnboarding() {
           <input className="auth-input" placeholder="Work Phone"   value={form.workPhone} onChange={e=>setField('workPhone', e.target.value)} />
         </div>
 
+
         {/* Email (read-only) */}
         <input className="auth-input" type="email" placeholder="Email *" value={form.email} readOnly aria-readonly="true" />
 
@@ -264,6 +274,7 @@ export default function EmployeeOnboarding() {
             <div style={hintStyle}>Format: MM/DD/YYYY</div>
           </div>
 
+
           <select className="auth-input" value={form.gender} onChange={e=>setField('gender', e.target.value)}>
             <option value="">Gender *</option>
             <option>Male</option>
@@ -272,6 +283,7 @@ export default function EmployeeOnboarding() {
             <option>I Prefer Not to Say</option>
           </select>
         </div>
+
 
         {/* Citizenship / Work Authorization */}
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8, marginTop:8 }}>
@@ -303,12 +315,15 @@ export default function EmployeeOnboarding() {
           )}
 
           {needsWorkAuth && form.workAuth === 'OTHER' && (
+
             <input className="auth-input" placeholder="Specify authorization *" value={form.workAuthOther}
                    onChange={e=>setField('workAuthOther', e.target.value)} />
+
           )}
         </div>
 
         {needsWorkAuth && (
+
           <>
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8, marginTop:8 }}>
               <div style={{ display:'flex', flexDirection:'column' }}>
@@ -392,221 +407,3 @@ export default function EmployeeOnboarding() {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
