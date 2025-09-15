@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logout } from '../redux/store/authSlice';     // adjust path if yours differs
 import { getToken,getUsername } from '../lib/jwt';
+import PersonalInfoContainer from '../component/employee/personal-info/PersonalInfoContainer';
 
 export default function PersonalInfo() {
   const nav = useNavigate();
@@ -30,6 +31,7 @@ export default function PersonalInfo() {
 
         <p style={{color:'#666', marginTop:0}}>Welcome! This is the employee personal info page for <strong>{username || 'user'}</strong>.</p>
         {/* TODO: replace with your form */}
+        <PersonalInfoContainer></PersonalInfoContainer>
       </div>
     </div>
   );
