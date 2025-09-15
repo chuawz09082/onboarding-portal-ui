@@ -1,21 +1,21 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import HROnly from '../components/HROnly';
-import { getToken, isHR,getUsername } from '../lib/jwt';
+import { getToken, isHR, getUsername } from '../lib/jwt';
 import API from '../lib/http';
 import { useDispatch } from 'react-redux';
 import { logout } from '../redux/store/authSlice';
 import '../App.css';
 
-export default function Onboarding() {
+export default function HROnboarding() {
   const nav = useNavigate();
   const dispatch = useDispatch();
   const username = getUsername();
 
-function doLogout() {
-  dispatch(logout());
-  nav('/login', { replace: true });
-}
+  function doLogout() {
+    dispatch(logout());
+    nav('/login', { replace: true });
+  }
 
   useEffect(() => {
     const t = getToken();
@@ -30,14 +30,13 @@ function doLogout() {
     <div className="auth-layout">
       <div className="auth-card">
         <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:12}}>
-          <h1 style={{margin:0, fontSize:36, lineHeight:1.1}}>Onboarding</h1>
+          <h1 style={{margin:0, fontSize:36, lineHeight:1.1}}>Onboarding (HR)</h1>
           <button className="auth-button" onClick={doLogout} style={{width:'auto', padding:'8px 12px'}}>Logout</button>
         </div>
-        <p style={{color:'#666', marginTop:0}}>Welcome! This is the HR personal info page for <strong>{username || 'user'}</strong>.</p>
+        <p style={{color:'#666', marginTop:0}}>Welcome! This is the HR tools page for <strong>{username || 'user'}</strong>.</p>
 
         <hr style={{ margin: '16px 0', border: 0, borderTop: '1px solid #eee' }} />
 
-        {/* HR-only */}
         <HROnly fallback={null}>
           <HRTools />
         </HROnly>
@@ -57,7 +56,6 @@ function HRTools() {
   async function genLink() {
     const e = email.trim();
 
-    // front-end validation so we never show a link for errors
     if (!e) { setErr('Email is required'); setOut(''); return; }
     if (!emailOk(e)) { setErr('Invalid email'); setOut(''); return; }
 
@@ -72,22 +70,19 @@ function HRTools() {
       });
 
       if (r.status === 200) {
-        setOut(r.data);                // success → show link below
+        setOut(r.data);
       } else if (r.status === 401) {
         sessionStorage.removeItem('access_token');
         window.location.href = '/login';
       } else if (r.status === 403) {
         setErr('Forbidden: you do not have HR permissions.');
       } else {
-        // prefer server message; fall back to generic
         const msg = (typeof r.data === 'string' && r.data.trim())
           ? r.data.trim()
           : 'Something went wrong. Please try again.';
-        setErr(msg);                   // error → red text only
+        setErr(msg);
       }
-    } finally {
-      setBusy(false);
-    }
+    } finally { setBusy(false); }
   }
 
   async function copyLink() {
@@ -128,172 +123,3 @@ function HRTools() {
     </section>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
