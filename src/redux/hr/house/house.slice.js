@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   addHouseThunk,
   deleteHouseThunk,
+  getHouseByIdThunk,
   getHouseListThunk,
 } from "./house.thunk";
 
@@ -9,6 +10,7 @@ const houseSlice = createSlice({
   name: "house",
   initialState: {
     houseList: [],
+    house: {},
     loading: false,
     error: null,
     addHouseMessage: "",
@@ -47,6 +49,17 @@ const houseSlice = createSlice({
       state.deleteHouseMessage = "Failed to delete house";
     });
     builder.addCase(deleteHouseThunk.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(getHouseByIdThunk.fulfilled, (state, action) => {
+      state.loading = false;
+      state.house = action.payload;
+    });
+    builder.addCase(getHouseByIdThunk.rejected, (state, action) => {
+      state.loading = false;
+      state.error = "Error";
+    });
+    builder.addCase(getHouseByIdThunk.pending, (state, action) => {
       state.loading = true;
     });
   },

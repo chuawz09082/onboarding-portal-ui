@@ -5,6 +5,7 @@ import House from "./component/hr/house/House";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import AddHouse from "./component/hr/add-house/AddHouse";
+import ViewHouse from "./component/hr/view-house/ViewHouseDetails";
 import PrivateRoute from "./components/PrivateRoute";
 import Login from "./pages/Login";
 import Onboarding from "./pages/Onboarding";
@@ -26,7 +27,8 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/house" element={<House />} />
-        <Route path="/house-add" element={<AddHouse />} />
+        <Route path="/add-house" element={<AddHouse />} />
+        <Route path="/house/:id" element={<ViewHouse />} />
         {/* Protected (everything inside requires login) */}
         <Route element={<PrivateRoute />}>
           <Route path="/onboarding" element={<Onboarding />} />

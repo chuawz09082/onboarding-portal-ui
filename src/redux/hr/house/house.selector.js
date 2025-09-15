@@ -6,3 +6,9 @@ export const selectHouseList = createSelector(
   selectHouseState,
   (house) => house.houseList
 );
+
+export const selectHouseById = createSelector(
+  selectHouseState,
+  (house) => house.house
+);
+
