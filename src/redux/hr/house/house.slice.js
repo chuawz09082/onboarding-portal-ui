@@ -1,13 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { addHouseThunk, getHouseListThunk } from "./house.thunk";
+import {
+  addHouseThunk,
+  deleteHouseThunk,
+  getHouseByIdThunk,
+  getHouseListThunk,
+} from "./house.thunk";
 
 const houseSlice = createSlice({
   name: "house",
   initialState: {
     houseList: [],
+    house: {},
     loading: false,
     error: null,
-    addHouseMessage: null,
+    addHouseMessage: "",
+    deleteHouseMessage: "",
   },
   reducers: {},
   extraReducers: (builder, state) => {
@@ -31,6 +38,28 @@ const houseSlice = createSlice({
       state.addHouseMessage = "Failed to add house";
     });
     builder.addCase(addHouseThunk.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(deleteHouseThunk.fulfilled, (state, action) => {
+      state.loading = false;
+      state.deleteHouseMessage = "House delete successfully";
+    });
+    builder.addCase(deleteHouseThunk.rejected, (state, action) => {
+      state.loading = false;
+      state.deleteHouseMessage = "Failed to delete house";
+    });
+    builder.addCase(deleteHouseThunk.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(getHouseByIdThunk.fulfilled, (state, action) => {
+      state.loading = false;
+      state.house = action.payload;
+    });
+    builder.addCase(getHouseByIdThunk.rejected, (state, action) => {
+      state.loading = false;
+      state.error = "Error";
+    });
+    builder.addCase(getHouseByIdThunk.pending, (state, action) => {
       state.loading = true;
     });
   },

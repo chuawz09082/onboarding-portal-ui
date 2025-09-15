@@ -1,8 +1,12 @@
 import { useEffect } from "react";
 import { Button, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { selectHouseList } from "../../../redux/hr/house/house.selector";
-import { getHouseListThunk } from "../../../redux/hr/house/house.thunk";
+import {
+  deleteHouseThunk,
+  getHouseListThunk,
+} from "../../../redux/hr/house/house.thunk";
 import "./House.css";
 
 const House = () => {
@@ -16,21 +20,23 @@ const House = () => {
   const response = useSelector(selectHouseList) || [];
   data = response.data || [];
 
+  const handleDelete = (id) => {
+    dispatch(deleteHouseThunk(id)).then(() => {
+      alert("House deleted successfully!");
+      dispatch(getHouseListThunk());
+    });
+  };
+
   const body = data.map((data) => (
     <tbody key={data.id}>
       <tr>
         <td className="col-style">{data.id}</td>
-
         <td className="col-style">{data.address}</td>
-
         <td className="col-style">{data.maxOccupant}</td>
-
         <td className="col-style">
           {data.landlord.firstName + " " + data.landlord.lastName}
         </td>
-
         <td className="col-style">{data.landlord.cellphone}</td>
-
         <td className="col-style">{data.landlord.email}</td>
 
         <td
@@ -41,17 +47,10 @@ const House = () => {
           }}
         >
           <Button
+            as={Link}
+            to={`/house/${data.id}`}
             className="btn-view mr-1"
             variant="info"
-            // onClick={(id, username, email, gender, phot) =>
-            //   this.handleView(
-            //     data.id,
-            //     data.username,
-            //     data.gender,
-            //     data.email,
-            //     data.photo
-            //   )
-            // }
           >
             View
           </Button>
@@ -76,7 +75,7 @@ const House = () => {
           <Button
             className="btn-delete mr-1"
             variant="danger"
-            // onClick={(id) => this.handleDelete(data.id)}
+            onClick={() => handleDelete(data.id)}
           >
             Delete
           </Button>
@@ -86,8 +85,16 @@ const House = () => {
   ));
 
   return (
-    <div className="container text-center">
-      <h2 className="header">Housing management</h2>
+    <div className="container">
+      <h2 className="header text-center">Housing management</h2>
+      <Button
+        as={Link}
+        to={"/add-house"}
+        className="btn-primary mr-1"
+        style={{ tectAlign: "left !important" }}
+      >
+        Add House
+      </Button>
       <Table className="mt-4 ">
         <thead className="table-dark">
           <tr>
