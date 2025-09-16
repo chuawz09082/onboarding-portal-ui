@@ -14,7 +14,6 @@ import ViewHouse from "./component/hr/view-house/ViewHouseDetails";
 
 // ===== Protected pages (require login) =====
 import EmployeeOnboarding from "./pages/EmployeeOnboarding";
-import HROnboarding from "./pages/HROnboarding";
 import PersonalInfo from "./pages/PersonalInfo";
 
 // ===== New layout + pages from teammate =====
@@ -24,6 +23,7 @@ import EmployeeDetail from './components/EmployeeDetail';
 import MainContent from "./components/MainContent";
 import Home from "./pages/Home";
 import Employee from "./pages/Employee";
+import RegistrationToken from "./pages/RegistrationToken"
 import Application from "./pages/Application";
 import Housing from "./pages/Housing";
 
@@ -35,7 +35,7 @@ import { getToken, isHR } from "./lib/jwt";
 function AfterLoginRouter() {
   const t = getToken();
   if (!t) return <Navigate to="/login" replace />;
-  return isHR(t) ? <Navigate to="/hr/onboarding" replace /> : <Navigate to="/onboarding" replace />;
+  return isHR(t) ? <Navigate to="/home" replace /> : <Navigate to="/onboarding" replace />;
 }
 
 // A shell shown on authenticated pages (adds Sidebar/Topbar/MainContent)
@@ -78,13 +78,13 @@ export default function App() {
             {/* Existing protected pages */}
             <Route path="/onboarding" element={<EmployeeOnboarding />} />
             <Route path="/personal-info" element={<PersonalInfo />} />
-            <Route path="/hr/onboarding" element={<HROnboarding />} />
             <Route path="/admin" element={<AdminPage />} />
 
             {/* Teammate’s new pages */}
             <Route path="/home" element={<Home />} />
             <Route path="/employee" element={<Employee />} />
             <Route path="/employee/:id" element={<EmployeeDetail />} />
+            <Route path="/registration-token" element={<RegistrationToken />} />
             <Route path="/application" element={<Application />} />
             <Route path="/housing" element={<Housing />} />
           </Route>
