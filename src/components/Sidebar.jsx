@@ -1,9 +1,14 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { getToken, isHR } from '../lib/jwt'; 
 
 function Sidebar() {
   const location = useLocation();
   const isActive = (path) => location.pathname === path;
+  const showReg = (() => {
+        const t = getToken?.();
+        return t && isHR(t);
+      })();
 
   return (
     <>
@@ -15,7 +20,7 @@ function Sidebar() {
               🎯
             </div>
             <span className="text-xl font-semibold text-gray-800">
-              Onbording Portal
+              Onboarding Portal
             </span>
           </div>
         </div>
@@ -40,7 +45,7 @@ function Sidebar() {
               </Link>
             </li>
             {/* Employee bar */}
-            <li>
+            {showReg && (<li>
               <Link
                 to="/employee"
                 className={`flex items-center space-x-3 px-5 py-1 rounded-full hover:bg-blue-100 transition-colors ${
@@ -55,7 +60,27 @@ function Sidebar() {
                 </span>
               </Link>
             </li>
+            )}
+             {/* Registration Token (HR only) */}
+             {showReg && (
+             <li>
+                <Link
+                  to="/registration-token"
+                  className={`flex items-center space-x-3 px-5 py-1 rounded-full hover:bg-blue-100 transition-colors ${
+                    isActive('/registration-token')
+                      ? 'bg-blue-100 text-blue-600 font-medium'
+                      : 'text-gray-600 hover:bg-blue-100 hover:text-gray-900'
+                  }`}
+                >
+                  <span className="text-lg">🔗</span>
+                  <span className="text-gray-600 hover:text-gray-950 font-medium">
+                    Registration Link
+                  </span>
+                </Link>
+              </li>
+            )}
             {/* Application bar */}
+            {showReg && (
             <li>
               <Link
                 to="/application"
@@ -71,7 +96,9 @@ function Sidebar() {
                 </span>
               </Link>
             </li>
+            )}
             {/* Housing bar */}
+            {showReg && (
             <li>
               <Link
                 to="/housing"
@@ -87,6 +114,7 @@ function Sidebar() {
                 </span>
               </Link>
             </li>
+            )}
           </ul>
         </nav>
       </div>
