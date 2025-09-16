@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import API from '../../lib/http'; // path: from src/store to src/lib
+import API from '../../lib/http';
 
 export const login = createAsyncThunk(
   'auth/login',
@@ -22,12 +22,17 @@ const slice = createSlice({
   initialState: {
     status: 'idle',
     error: null,
-    token: sessionStorage.getItem('access_token')
+    token: sessionStorage.getItem('access_token') || localStorage.getItem('access_token') || null
   },
   reducers: {
+    // NEW: setToken so we can sync Redux after register/auto-login
+    setToken(state, action) {
+      state.token = action.payload || null;
+    },
     logout(state) {
       state.token = null;
       sessionStorage.removeItem('access_token');
+      localStorage.removeItem('access_token');
     }
   },
   extraReducers: (b) => {
@@ -41,7 +46,9 @@ const slice = createSlice({
 export const selectToken      = (s) => s.auth.token;
 export const selectAuthStatus = (s) => s.auth.status;
 export const selectAuthError  = (s) => s.auth.error;
-export const { logout } = slice.actions;
+
+// export setToken so we can use it
+export const { logout, setToken } = slice.actions;
 export default slice.reducer;
 
 

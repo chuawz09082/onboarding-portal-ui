@@ -84,9 +84,10 @@ export default function App() {
         {/* Protected area */}
         <Route element={<PrivateRoute />}>
           {/* Everything inside uses the authenticated layout */}
+          <Route path="/onboarding" element={<EmployeeOnboarding />} />
           <Route element={<AppShell />}>
             {/* Existing protected pages */}
-            <Route path="/onboarding" element={<EmployeeOnboarding />} />
+            
             <Route path="/personal-info" element={<PersonalInfo />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/housing" element={<Housing />} />
