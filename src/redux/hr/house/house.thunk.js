@@ -43,3 +43,15 @@ export const getHouseByIdThunk = createAsyncThunk(
     return data;
   }
 );
+
+export const getEmployeeByHouseIdThunk = createAsyncThunk(
+  "house/getEmployeeByHouseIdThunk",
+  async (id) => {
+    const response = await Axios.get(
+      `http://localhost:8080/api/v1/employees/house/${id}`
+    );
+
+    const data = response.data.data;
+    return data;
+  }
+);

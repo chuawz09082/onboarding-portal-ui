@@ -12,3 +12,12 @@ export const selectHouseById = createSelector(
   (house) => house.house
 );
 
+export const selectEmployeesByHouseId = createSelector(
+  selectHouseState,
+  (house) => house.employees
+);
+
+export const selectHouseByEmployeeId = createSelector(
+  selectHouseState,
+  (house) => house.house
+);
