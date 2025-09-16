@@ -34,10 +34,12 @@ function makeDefaultAvatarDataUrl(seedText, labelText = '') {
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 }
 
+
 export default function EmployeeOnboarding() {
   const nav = useNavigate();
   const dispatch = useDispatch();
   const username = getUsername();
+
 
   const [form, setForm] = useState({
     firstName: '', lastName: '', middleName: '', preferredName: '',
@@ -76,6 +78,7 @@ export default function EmployeeOnboarding() {
     dispatch(logout());
     nav('/login', { replace: true });
   }
+
 
   // ---- Fetch email from DB first, then userinfo, then local fallback ----
   useEffect(() => {
@@ -124,6 +127,7 @@ export default function EmployeeOnboarding() {
 
   // helpers
   function setField(name, value) { setForm(f => ({ ...f, [name]: value })); }
+
   function setNested(path, value) {
     setForm(f => {
       const copy = { ...f };
@@ -143,6 +147,7 @@ export default function EmployeeOnboarding() {
     if (!form.firstName.trim()) return 'First name is required';
     if (!form.lastName.trim()) return 'Last name is required';
     if (!form.email.trim()) return 'Email is required';
+
     if (!emailRegex.test(form.email)) return 'Email looks invalid';
     if (!form.cellPhone.trim()) return 'Cell phone is required';
     if (!phoneOk(form.cellPhone)) return 'Cell phone looks invalid';
@@ -269,6 +274,7 @@ export default function EmployeeOnboarding() {
             <input className="auth-input" type="date" value={form.dob} onChange={e=>setField('dob', e.target.value)} />
             <div style={hintStyle}>Format: MM/DD/YYYY</div>
           </div>
+
 
           <select className="auth-input" value={form.gender} onChange={e=>setField('gender', e.target.value)}>
             <option value="">Gender *</option>
@@ -408,4 +414,5 @@ export default function EmployeeOnboarding() {
   );
 
 }
+
 

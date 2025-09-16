@@ -8,9 +8,11 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 
 // ===== Existing HR demo pages (public) =====
+
 import House from "./component/hr/house/House";
 import AddHouse from "./component/hr/add-house/AddHouse";
 import ViewHouse from "./component/hr/view-house/ViewHouseDetails";
+
 
 // ===== Protected pages (require login) =====
 import EmployeeOnboarding from "./pages/EmployeeOnboarding";
@@ -51,6 +53,22 @@ function AppShell() {
   );
 }
 
+
+import EmployeeOnboarding from "./pages/EmployeeOnboarding";
+import HROnboarding from "./pages/HROnboarding";
+import PersonalInfo from "./pages/PersonalInfo";
+
+import { getToken, isHR } from "./lib/jwt";
+
+// Small router that decides the landing page after login
+function AfterLoginRouter() {
+  const t = getToken();
+  if (!t) return <Navigate to="/login" replace />;
+  return isHR(t)
+    ? <Navigate to="/hr/onboarding" replace />
+    : <Navigate to="/onboarding" replace />;
+}
+
 function AdminPage() {
   return <div>Admin page</div>;
 }
@@ -66,10 +84,11 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* Public HR demo pages */}
+
         <Route path="/house" element={<House />} />
         <Route path="/add-house" element={<AddHouse />} />
         <Route path="/house/:id" element={<ViewHouse />} />
+
 
         {/* Protected area */}
         <Route element={<PrivateRoute />}>
@@ -88,6 +107,7 @@ export default function App() {
             <Route path="/application" element={<Application />} />
             <Route path="/housing" element={<Housing />} />
           </Route>
+
         </Route>
 
         {/* Fallback */}
