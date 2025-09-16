@@ -1,15 +1,14 @@
-// src/pages/hr/house/ViewHouse.jsx
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { Button, Card, ListGroup, Modal, Table } from "react-bootstrap";
+import { useSelector } from "react-redux";
 import {
-  Button,
-  Card,
-  ListGroup,
-  Modal,
-  Pagination,
-  Table,
-} from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+  selectEmployeesByHouseId,
+  selectHouseById,
+} from "../../../redux/hr/house/house.selector";
+
+import { useEffect } from "react";
+import { Pagination } from "react-bootstrap";
+import { useDispatch } from "react-redux";
 import { selectFacilityReport } from "../../../redux/hr/facility-report/facility-report.selector";
 import {
   addCommentThunk,
@@ -18,31 +17,23 @@ import {
   updateCommentThunk,
 } from "../../../redux/hr/facility-report/facility-report.thunk";
 import {
-  selectEmployeesByHouseId,
-  selectHouseById,
-} from "../../../redux/hr/house/house.selector";
-import {
   getEmployeeByHouseIdThunk,
   getHouseByIdThunk,
 } from "../../../redux/hr/house/house.thunk";
-
 const ITEMS_PER_PAGE = 3;
-
-const ViewHouse = () => {
-  const { id } = useParams();
+const Housing = () => {
   const dispatch = useDispatch();
   const house = useSelector(selectHouseById);
+  const employees = useSelector(selectEmployeesByHouseId);
   const facilityReportList = useSelector(selectFacilityReport);
 
-  const employees = useSelector(selectEmployeesByHouseId);
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const [selectedReport, setSelectedReport] = useState(null);
-  
+  const [showNewReportModal, setShowNewReportModal] = useState(false);
+  const [newReport, setNewReport] = useState({ title: "", description: "" });
 
   useEffect(() => {
-    // Fetch house details
-    dispatch(getHouseByIdThunk(id)).then((res) => {
+    const employeeId = 1; // Replace with actual employee ID
+    const houseId = 7;
+    dispatch(getHouseByIdThunk(houseId)).then((res) => {
       // After house fetched, fetch facility reports
       if (res.payload?.facilityList) {
         res.payload.facilityList.forEach((facility) => {
@@ -50,19 +41,12 @@ const ViewHouse = () => {
         });
       }
     });
-    dispatch(getEmployeeByHouseIdThunk(id));
-  }, [dispatch, id]);
-
+    dispatch(getEmployeeByHouseIdThunk(houseId));
+  }, [dispatch]);
   if (!house) {
-    return <p>Loading house details...</p>;
+    return <div>Loading...</div>;
   }
-
-  const facilityCounts = { Bed: 0, Mattress: 0, Table: 0, Chair: 0 };
-  house.facilityList?.forEach((facility) => {
-    if (facility.type in facilityCounts) {
-      facilityCounts[facility.type] += facility.quantity;
-    }
-  });
+  const [currentPage, setCurrentPage] = useState(1);
 
   const sortedReports = [...(facilityReportList || [])].sort(
     (a, b) => new Date(b.createdDate) - new Date(a.createdDate)
@@ -87,6 +71,7 @@ const ViewHouse = () => {
       });
   };
 
+  const [selectedReport, setSelectedReport] = useState(null);
   const [newComment, setNewComment] = useState("");
   const [editingComment, setEditingComment] = useState(null);
 
@@ -95,10 +80,9 @@ const ViewHouse = () => {
 
   return (
     <div className="container mt-4">
-      {/* Basic House Info */}
       <Card className="mb-4">
         <Card.Header>
-          <h3>Basic House Information</h3>
+          <h3>House Information</h3>
         </Card.Header>
         <Card.Body>
           <ListGroup variant="flush">
@@ -106,94 +90,53 @@ const ViewHouse = () => {
               <strong>Address:</strong> {house.address}
             </ListGroup.Item>
             <ListGroup.Item>
-              <strong>Number of People:</strong> {house.maxOccupant}
-            </ListGroup.Item>
-            {house.landlord && (
-              <>
-                <h5 className="mt-3">Landlord</h5>
-                <ListGroup.Item>
-                  <strong>Name:</strong> {house.landlord.firstName}{" "}
-                  {house.landlord.lastName}
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <strong>Email:</strong> {house.landlord.email}
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <strong>Phone:</strong> {house.landlord.cellphone}
-                </ListGroup.Item>
-              </>
-            )}
-          </ListGroup>
-        </Card.Body>
-      </Card>
-      {/* Employee Information List */}
-      <Card className="mb-4">
-        <Card.Header>
-          <h3>Employee Information</h3>
-        </Card.Header>
-        <Card.Body>
-          {/* {{house.employe}} */}
-          {employees && employees.length > 0 ? (
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Phone</th>
-                  <th>Email</th>
-                </tr>
-              </thead>
-              <tbody>
-                {employees.map((emp) => (
-                  <tr
-                    key={emp.id}
-                    style={{ cursor: "pointer" }}
-                    onClick={() =>
-                      // navigate to employee profile page (adjust route as needed)
-                      (window.location.href = `/hr/employee/${emp.id}`)
-                    }
-                  >
-                    <td>{emp.preferredName || emp.firstName}</td>
-                    <td>{emp.phone}</td>
-                    <td>{emp.email}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          ) : (
-            <p>No employees assigned to this house.</p>
-          )}
-        </Card.Body>
-      </Card>
-
-      {/* Facility Info */}
-      <Card className="mb-4">
-        <Card.Header>
-          <h3>Facility Information</h3>
-        </Card.Header>
-        <Card.Body>
-          <ListGroup variant="flush">
-            <ListGroup.Item>
-              <strong>Number of Beds:</strong> {facilityCounts.Bed}
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <strong>Number of Mattresses:</strong> {facilityCounts.Mattress}
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <strong>Number of Tables:</strong> {facilityCounts.Table}
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <strong>Number of Chairs:</strong> {facilityCounts.Chair}
+              <strong>Employees:</strong>
+              {employees && employees.length > 0 ? (
+                <Table striped bordered hover className="mt-3">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Phone</th>
+                      <th>Email</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {employees.map((emp) => (
+                      <tr
+                        key={emp.id}
+                        style={{ cursor: "pointer" }}
+                        onClick={() =>
+                          // navigate to employee profile page (adjust route as needed)
+                          (window.location.href = `/employee/${emp.employeeId}`)
+                        }
+                      >
+                        <td>{emp.preferredName || emp.firstName}</td>
+                        <td>{emp.phone}</td>
+                        <td>{emp.email}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              ) : (
+                <p>No employees assigned to this house.</p>
+              )}
             </ListGroup.Item>
           </ListGroup>
         </Card.Body>
       </Card>
-
-      {/* Facility Report List */}
       <Card className="mb-4">
         <Card.Header>
           <h3>Facility Reports</h3>
         </Card.Header>
         <Card.Body>
+          <Button
+            className="mb-3"
+            variant="primary"
+            onClick={() => setShowNewReportModal(true)}
+          >
+            + Create New Report
+          </Button>
+
           {paginatedReports.length > 0 ? (
             <>
               <Table striped bordered hover>
@@ -245,7 +188,67 @@ const ViewHouse = () => {
           )}
         </Card.Body>
       </Card>
-
+      <Modal
+        show={showNewReportModal}
+        onHide={() => {
+          setShowNewReportModal(false);
+          setNewReport({ title: "", description: "" });
+        }}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>New Facility Report</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <input
+            type="text"
+            className="form-control mb-2"
+            placeholder="Report Title"
+            value={newReport.title}
+            onChange={(e) =>
+              setNewReport({ ...newReport, title: e.target.value })
+            }
+          />
+          <textarea
+            className="form-control"
+            rows={4}
+            placeholder="Describe the issue..."
+            value={newReport.description}
+            onChange={(e) =>
+              setNewReport({ ...newReport, description: e.target.value })
+            }
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setShowNewReportModal(false);
+              setNewReport({ title: "", description: "" });
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="primary"
+            onClick={() => {
+              dispatch(
+                createFacilityReportThunk({
+                  houseId: house.id,
+                  title: newReport.title,
+                  description: newReport.description,
+                })
+              ).then(() => {
+                setShowNewReportModal(false);
+                setNewReport({ title: "", description: "" });
+                // refresh reports
+                dispatch(getFacilityReportsByHouseIdThunk(house.id));
+              });
+            }}
+          >
+            Submit
+          </Button>
+        </Modal.Footer>
+      </Modal>
       {/* Report Modal */}
       <Modal
         show={!!selectedReport}
@@ -291,9 +294,14 @@ const ViewHouse = () => {
                             variant="warning"
                             className="ms-2"
                             onClick={() => {
+                              if (c.employeeId !== 1) {
+                                alert("You can only edit your own comments.");
+                                return;
+                              }
                               setCommentToEdit(c);
                               setShowEditModal(true);
                             }}
+                            hidden={c.employeeId !== 1} // Assuming current user ID is 1
                           >
                             Edit
                           </Button>
@@ -424,4 +432,4 @@ const ViewHouse = () => {
   );
 };
 
-export default ViewHouse;
+export default Housing;
