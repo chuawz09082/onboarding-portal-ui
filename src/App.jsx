@@ -20,6 +20,7 @@ import PersonalInfo from "./pages/PersonalInfo";
 // ===== New layout + pages from teammate =====
 import Sidebar from "./components/Sidebar";
 import Topbar from "./components/Topbar";
+import EmployeeDetail from './components/EmployeeDetail';
 import MainContent from "./components/MainContent";
 import Home from "./pages/Home";
 import Employee from "./pages/Employee";
