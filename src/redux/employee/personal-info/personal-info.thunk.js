@@ -19,11 +19,77 @@ export const getPersonalInfoThunk = createAsyncThunk(
 
 )
 
-export const editPersonalInfoThunk = createAsyncThunk(
-    "personalInfo/editPersonalInfoThunk",
+// export const editPersonalInfoThunk = createAsyncThunk(
+//     "personalInfo/editPersonalInfoThunk",
+//     async (personalData) => {
+//         console.log(personalData)
+//         const response = await axios.patch(
+//             url + id,
+//             personalData
+//         );
+//         return response;
+//     }
+// )
+
+export const editNameSectionThunk = createAsyncThunk(
+    "personalInfo/editNameSectionThunk",
     async (personalData) => {
+        // console.log(url + "name/" + id)
+        // console.log(JSON.stringify(personalData))
         const response = await axios.patch(
-            url + id,
+            url + "name/" + id,
+            personalData
+        );
+        return response;
+    }
+)
+
+export const editAddressSectionThunk = createAsyncThunk(
+    "personalInfo/editAddressSectionThunk",
+    async (personalData) => {
+        // console.log(url + "name/" + id)
+        // console.log(JSON.stringify(personalData))
+        const response = await axios.patch(
+            url + "address/" + id,
+            personalData
+        );
+        return response;
+    }
+)
+
+export const editContactSectionThunk = createAsyncThunk(
+    "personalInfo/editContactSectionThunk",
+    async (personalData) => {
+        // console.log(url + "name/" + id)
+        // console.log(JSON.stringify(personalData))
+        const response = await axios.patch(
+            url + "contact/" + id,
+            personalData
+        );
+        return response;
+    }
+)
+
+export const editEmploymentSectionThunk = createAsyncThunk(
+    "personalInfo/editEmploymentSectionThunk",
+    async (personalData) => {
+        // console.log(url + "name/" + id)
+        // console.log(JSON.stringify(personalData))
+        const response = await axios.patch(
+            url + "employment/" + id,
+            personalData
+        );
+        return response;
+    }
+)
+
+export const editEmergencyContactSectionThunk = createAsyncThunk(
+    "personalInfo/editEmergencyContactSectionThunk",
+    async (personalData) => {
+        // console.log(url + "name/" + id)
+        // console.log(JSON.stringify(personalData))
+        const response = await axios.patch(
+            url + "emergency-contact/" + id,
             personalData
         );
         return response;
