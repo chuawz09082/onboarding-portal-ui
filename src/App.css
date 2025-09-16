@@ -1,8 +1,12 @@
+@import 'tailwindcss';
 /* Force light theme */
 :root { color-scheme: light; }
 
 /* Make the app fill the viewport and kill the Vite template centering */
 html, body, #root { height: 100%; min-height: 100%; }
+
+
+
 #root {
   max-width: none;
   margin: 0;
