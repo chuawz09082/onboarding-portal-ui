@@ -38,7 +38,6 @@ const ViewHouse = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedReport, setSelectedReport] = useState(null);
-  
 
   useEffect(() => {
     // Fetch house details
@@ -149,7 +148,7 @@ const ViewHouse = () => {
                     style={{ cursor: "pointer" }}
                     onClick={() =>
                       // navigate to employee profile page (adjust route as needed)
-                      (window.location.href = `/hr/employee/${emp.id}`)
+                      (window.location.href = `/hr/employee/${emp.employeeId}`)
                     }
                   >
                     <td>{emp.preferredName || emp.firstName}</td>
