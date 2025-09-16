@@ -16,7 +16,7 @@ export default function Register() {
   useEffect(() => {
     let ignore = false;
     fetch(`${AUTH}/register/validate?token=${encodeURIComponent(token)}`)
-      .then(async r => { if (!ignore) setValid(r.ok); })
+      .then(r => { if (!ignore) setValid(r.ok); })
       .catch(() => { if (!ignore) setValid(false); });
     return () => { ignore = true; };
   }, [token]);
@@ -34,12 +34,15 @@ export default function Register() {
     e.preventDefault();
     setErr('');
     setBusy(true);
+
     const fd = new FormData(e.currentTarget);
     const body = {
       username: String(fd.get('username') || '').trim(),
-      email: String(fd.get('email') || '').trim(),
+      // always submit the invite email if present; fall back to form value
+      email: String(emailFromLink || fd.get('email') || '').trim(),
       password: String(fd.get('password') || '')
     };
+
     try {
       const res = await fetch(`${AUTH}/register?token=${encodeURIComponent(token)}`, {
         method: 'POST',
@@ -50,26 +53,58 @@ export default function Register() {
       nav('/login', { replace: true });
     } catch (e) {
       setErr(e.message || 'Registration failed');
-    } finally { setBusy(false); }
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
     <div className="auth-layout">
-      <form onSubmit={onSubmit} className="auth-card">
-        <h1 style={{ margin: '0 0 16px', fontSize: 36, lineHeight: 1.1 }}>Create your account</h1>
+      <form onSubmit={onSubmit} className="auth-card" noValidate>
+        <h1 style={{ margin: '0 0 16px', fontSize: 36, lineHeight: 1.1 }}>
+          Create your account
+        </h1>
 
-        <input className="auth-input" name="username" required minLength={5} placeholder="Username (min 5)" />
-        <input className="auth-input" name="email" type="email" required placeholder="Email" defaultValue={emailFromLink} />
-        <input className="auth-input" name="password" type="password" required minLength={8} placeholder="Password (min 8)" />
+        <input
+          className="auth-input"
+          name="username"
+          required
+          minLength={5}
+          placeholder="Username (min 5)"
+        />
 
-        <button className="auth-button" type="submit" disabled={busy}>{busy ? 'Creating…' : 'Register'}</button>
+        {/* Email: read-only so user cannot change it, but it still submits */}
+        <input
+          className="auth-input"
+          name="email"
+          type="email"
+          required
+          placeholder="Email"
+          defaultValue={emailFromLink}
+          readOnly
+          aria-readonly="true"
+          // optional: visual cue
+          style={{ background: '#f8f9fa', cursor: 'not-allowed' }}
+        />
+
+        <input
+          className="auth-input"
+          name="password"
+          type="password"
+          required
+          minLength={8}
+          placeholder="Password (min 8)"
+        />
+
+        <button className="auth-button" type="submit" disabled={busy}>
+          {busy ? 'Creating…' : 'Register'}
+        </button>
+
         {err && <p style={{ color: 'crimson', marginTop: 10 }}>{err}</p>}
       </form>
     </div>
   );
 }
-
-
 
 
 
