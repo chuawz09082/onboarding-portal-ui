@@ -31,6 +31,7 @@ export const uploadDocument = createAsyncThunk(
   }
 );
 
+
 const initialState = { documents: [], loading: false, error: null };
 
 const documentsSlice = createSlice({

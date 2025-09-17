@@ -39,6 +39,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import { getToken, isHR } from "./lib/jwt";
 
 import VisaStatus from "./pages/VisaStatus";
+import DigitalDocumentsSlice from "./redux/digitalDocumentsSlice";
 
 // Decides landing page after login based on role
 function AfterLoginRouter() {
@@ -88,6 +89,7 @@ export default function App() {
         <Route element={<PrivateRoute />}>
           {/* Everything inside uses the authenticated layout */}
           <Route path="/onboarding" element={<EmployeeOnboarding />} />
+          <Route path="/onboarding/documents" element={<DigitalDocumentsSlice />} />
           <Route element={<AppShell />}>
             {/* Existing protected pages */}
             
