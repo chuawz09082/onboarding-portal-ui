@@ -3,6 +3,7 @@ import { configureStore } from '@reduxjs/toolkit';
 // Existing slices
 import auth from './authSlice';
 import house from '../hr/house/house.slice';
+import personalInfo from "../employee/personal-info/personal-info.slice"
 import facilityReport from '../hr/facility-report/facility-report.slice';
 
 // New slices from the other store
@@ -15,6 +16,7 @@ export const store = configureStore({
     auth,
     house,
     facilityReport,
+    personalInfo,
 
     // add the new feature keys
     visaStatus,
