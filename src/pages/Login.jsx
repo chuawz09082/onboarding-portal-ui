@@ -1,22 +1,31 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { login as loginThunk } from '../redux/store/authSlice';   // <-- import the thunk
-import { getToken } from '../lib/jwt';
+import { login as loginThunk } from '../redux/store/authSlice';
+import { getToken, isHR } from '../lib/jwt';
 import '../App.css';
 
 export default function Login() {
   const nav = useNavigate();
-  const dispatch = useDispatch();                           // <-- get dispatch
+  const dispatch = useDispatch();
   const [username, setU] = useState('');
   const [password, setP] = useState('');
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
 
-  // If already logged in, skip login page
+  // Decide where to go *purely by role*
+  function routeByRole() {
+    const t = getToken();
+    if (!t) { nav('/login', { replace: true }); return; }
+    if (isHR(t)) nav('/hr/onboarding', { replace: true });
+    else nav('/onboarding', { replace: true });
+  }
+
+  // If already logged in, bounce immediately
   useEffect(() => {
-    if (getToken()) nav('/onboarding', { replace: true });
-  }, [nav]);
+    if (getToken()) routeByRole();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -24,7 +33,7 @@ export default function Login() {
     setBusy(true);
     try {
       await dispatch(loginThunk({ username: username.trim(), password })).unwrap();
-      nav('/onboarding', { replace: true });
+      routeByRole();
     } catch (e) {
       console.log('LOGIN ERROR', e);
       setErr(typeof e === 'string' ? e : 'Login failed');
@@ -64,6 +73,196 @@ export default function Login() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
