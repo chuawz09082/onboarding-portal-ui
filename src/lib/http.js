@@ -1,13 +1,10 @@
 import axios from 'axios';
 
-const API_BASE =
-  // Prefer a gateway for /application-service/... if you have one
-  // eslint-disable-next-line no-undef
-  (import.meta?.env?.VITE_API_BASE ||
-    // fallback to auth base for dev
-    // eslint-disable-next-line no-undef
-    import.meta?.env?.VITE_AUTH_BASE ||
-    'http://localhost:8080');
+// const API_BASE =
+  // (import.meta?.env?.VITE_API_BASE ||
+    // import.meta?.env?.VITE_AUTH_BASE ||
+    // 'http://localhost:8080');
+const API_BASE = 'http://localhost:9000';
 
 const API = axios.create({
   baseURL: API_BASE,
@@ -32,6 +29,8 @@ API.interceptors.response.use(
     return Promise.reject(err);
   }
 );
+
+console.log('[API_BASE]', API_BASE);
 
 export default API;
 

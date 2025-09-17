@@ -1,6 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
+
 import {
   BrowserRouter,
   Navigate,
@@ -36,6 +37,8 @@ import RegistrationToken from "./pages/RegistrationToken";
 // ===== Auth utils / guard =====
 import PrivateRoute from "./components/PrivateRoute";
 import { getToken, isHR } from "./lib/jwt";
+
+import VisaStatus from "./pages/VisaStatus";
 
 // Decides landing page after login based on role
 function AfterLoginRouter() {
@@ -98,6 +101,9 @@ export default function App() {
             <Route path="/employee/:id" element={<EmployeeDetail />} />
             <Route path="/registration-token" element={<RegistrationToken />} />
             <Route path="/application" element={<Application />} />
+
+            {/* New Visa Status page */}
+          <Route path="/visa-status" element={<VisaStatus />} />
           </Route>
         </Route>
 

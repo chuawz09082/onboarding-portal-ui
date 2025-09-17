@@ -44,6 +44,22 @@ function Sidebar() {
                 </span>
               </Link>
             </li>
+              {/* Visa Status */}
+          <li>
+             <Link
+               to="/visa-status"
+               className={`flex items-center space-x-3 px-5 py-1 rounded-full hover:bg-blue-100 transition-colors ${
+                 isActive('/visa-status')
+                   ? 'bg-blue-100 text-blue-600 font-medium'
+                   : 'text-gray-600 hover:bg-blue-100 hover:text-gray-900'
+               }`}
+             >
+               <span className="text-lg">🛂</span>
+               <span className="text-gray-600 hover:text-gray-950 font-medium">
+                 Visa Status
+               </span>
+             </Link>
+           </li>
             {/* Employee bar */}
             {showReg && (<li>
               <Link

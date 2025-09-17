@@ -1,86 +1,56 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import axios from 'axios'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import API from '../lib/http'; // <-- use the axios instance with interceptors
 
-// Async thunk to fetch documents list for an employee
 export const fetchDocuments = createAsyncThunk(
-    'documents/fetchDocuments',
-    async (employeeId, thunkAPI) => {
-        try {
-            const response = await axios.get(`http://localhost:8080/api/visa/documents/${employeeId}/list`)
-            return response.data
-        } catch (error) {
-            return thunkAPI.rejectWithValue(error.response?.data || error.message)
-        }
+  'documents/fetchDocuments',
+  async (employeeId, thunkAPI) => {
+    try {
+      const { data } = await API.get(`/api/visa/documents/${employeeId}/list`);
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || error.message);
     }
-)
+  }
+);
 
-// Async thunk to upload a document
 export const uploadDocument = createAsyncThunk(
-    'documents/uploadDocument',
-    async ({ employeeId, file, type, comment }, thunkAPI) => {
-        const formData = new FormData()
-        formData.append('file', file)
-        formData.append('type', type)
-        if (comment) formData.append('comment', comment)
+  'documents/uploadDocument',
+  async ({ employeeId, file, type, comment }, thunkAPI) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('type', type);
+    if (comment) formData.append('comment', comment);
 
-        try {
-            const response = await axios.post(`http://localhost:8080/api/visa/employee/${employeeId}/upload`, formData)
-            return response.data
-        } catch (error) {
-            return thunkAPI.rejectWithValue(error.response?.data || error.message)
-        }
+    try {
+      // DO NOT set Content-Type manually; axios sets multipart boundary for FormData
+      const { data } = await API.post(`/api/visa/employee/${employeeId}/upload`, formData);
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || error.message);
     }
-)
+  }
+);
 
-const initialState = {
-    documents: [],
-    loading: false,
-    error: null,
-}
+const initialState = { documents: [], loading: false, error: null };
 
 const documentsSlice = createSlice({
-    name: 'documents',
-    initialState,
-    reducers: {
-        setDocuments(state, action) {
-            state.documents = action.payload
-        },
-        setLoading(state, action) {
-            state.loading = action.payload
-        },
-        setError(state, action) {
-            state.error = action.payload
-        },
-    },
-    extraReducers: (builder) => {
-        builder
-            // Fetch documents cases
-            .addCase(fetchDocuments.pending, (state) => {
-                state.loading = true
-                state.error = null
-            })
-            .addCase(fetchDocuments.fulfilled, (state, action) => {
-                state.loading = false
-                state.documents = action.payload
-            })
-            .addCase(fetchDocuments.rejected, (state, action) => {
-                state.loading = false
-                state.error = action.payload
-            })
-            // Upload document cases
-            .addCase(uploadDocument.pending, (state) => {
-                state.loading = true
-                state.error = null
-            })
-            .addCase(uploadDocument.fulfilled, (state) => {
-                state.loading = false
-            })
-            .addCase(uploadDocument.rejected, (state, action) => {
-                state.loading = false
-                state.error = action.payload
-            })
-    },
-})
+  name: 'documents',
+  initialState,
+  reducers: {
+    setDocuments: (state, action) => { state.documents = action.payload; },
+    setLoading:   (state, action) => { state.loading = action.payload; },
+    setError:     (state, action) => { state.error   = action.payload; },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchDocuments.pending,   (s) => { s.loading = true;  s.error = null; })
+      .addCase(fetchDocuments.fulfilled, (s,a) => { s.loading = false; s.documents = a.payload; })
+      .addCase(fetchDocuments.rejected,  (s,a) => { s.loading = false; s.error = a.payload; })
+      .addCase(uploadDocument.pending,   (s) => { s.loading = true;  s.error = null; })
+      .addCase(uploadDocument.fulfilled, (s) => { s.loading = false; })
+      .addCase(uploadDocument.rejected,  (s,a) => { s.loading = false; s.error = a.payload; });
+  },
+});
 
-export const { setDocuments, setLoading, setError } = documentsSlice.actions
-export default documentsSlice.reducer
+export const { setDocuments, setLoading, setError } = documentsSlice.actions;
+export default documentsSlice.reducer;
