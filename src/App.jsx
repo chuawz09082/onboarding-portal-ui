@@ -1,7 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
-
 import {
   BrowserRouter,
   Navigate,
@@ -80,9 +79,6 @@ export default function App() {
         <Route path="/register" element={<Register />} />
 
         {/* Public HR demo pages */}
-        <Route path="/house" element={<House />} />
-        <Route path="/add-house" element={<AddHouse />} />
-        <Route path="/house/:id" element={<ViewHouse />} />
 
         {/* Protected area */}
         <Route element={<PrivateRoute />}>
@@ -90,11 +86,13 @@ export default function App() {
           <Route path="/onboarding" element={<EmployeeOnboarding />} />
           <Route element={<AppShell />}>
             {/* Existing protected pages */}
-            
+
             <Route path="/personal-info" element={<PersonalInfo />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/housing" element={<Housing />} />
-
+            <Route path="/house" element={<House />} />
+            <Route path="/add-house" element={<AddHouse />} />
+            <Route path="/house/:id" element={<ViewHouse />} />
             {/* Teammate’s new pages */}
             <Route path="/home" element={<Home />} />
             <Route path="/employee" element={<Employee />} />
@@ -103,7 +101,7 @@ export default function App() {
             <Route path="/application" element={<Application />} />
 
             {/* New Visa Status page */}
-          <Route path="/visa-status" element={<VisaStatus />} />
+            <Route path="/visa-status" element={<VisaStatus />} />
           </Route>
         </Route>
 

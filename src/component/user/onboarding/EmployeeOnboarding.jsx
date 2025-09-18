@@ -322,7 +322,7 @@ export default function EmployeeOnboarding() {
             }
           );
           const fileUploadResults = await uploadAllFiles(
-            employeeResponse.data.data.id
+            employeeResponse.data.data.employeeId
           );
           nav("/application", { replace: true });
         }

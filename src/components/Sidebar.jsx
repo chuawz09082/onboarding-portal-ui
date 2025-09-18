@@ -1,14 +1,13 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { getToken, isHR } from '../lib/jwt'; 
+import { Link, useLocation } from "react-router-dom";
+import { getToken, isHR } from "../lib/jwt";
 
 function Sidebar() {
   const location = useLocation();
   const isActive = (path) => location.pathname === path;
   const showReg = (() => {
-        const t = getToken?.();
-        return t && isHR(t);
-      })();
+    const t = getToken?.();
+    return t && isHR(t);
+  })();
 
   return (
     <>
@@ -33,9 +32,9 @@ function Sidebar() {
               <Link
                 to="/"
                 className={`flex items-center space-x-3 px-5 py-1 rounded-full hover:bg-blue-100 transition-colors ${
-                  isActive('/')
-                    ? 'bg-blue-100 text-blue-600 font-medium'
-                    : 'text-gray-600 hover:bg-blue-100 hover:text-gray-900'
+                  isActive("/")
+                    ? "bg-blue-100 text-blue-600 font-medium"
+                    : "text-gray-600 hover:bg-blue-100 hover:text-gray-900"
                 }`}
               >
                 <span className="text-lg">🏠</span>
@@ -44,48 +43,49 @@ function Sidebar() {
                 </span>
               </Link>
             </li>
-              {/* Visa Status */}
-          <li>
-             <Link
-               to="/visa-status"
-               className={`flex items-center space-x-3 px-5 py-1 rounded-full hover:bg-blue-100 transition-colors ${
-                 isActive('/visa-status')
-                   ? 'bg-blue-100 text-blue-600 font-medium'
-                   : 'text-gray-600 hover:bg-blue-100 hover:text-gray-900'
-               }`}
-             >
-               <span className="text-lg">🛂</span>
-               <span className="text-gray-600 hover:text-gray-950 font-medium">
-                 Visa Status
-               </span>
-             </Link>
-           </li>
-            {/* Employee bar */}
-            {showReg && (<li>
+            {/* Visa Status */}
+            <li>
               <Link
-                to="/employee"
+                to="/visa-status"
                 className={`flex items-center space-x-3 px-5 py-1 rounded-full hover:bg-blue-100 transition-colors ${
-                  isActive('/employee')
-                    ? 'bg-blue-100 text-blue-600 font-medium'
-                    : 'text-gray-600 hover:bg-blue-100 hover:text-gray-900'
+                  isActive("/visa-status")
+                    ? "bg-blue-100 text-blue-600 font-medium"
+                    : "text-gray-600 hover:bg-blue-100 hover:text-gray-900"
                 }`}
               >
-                <span className="text-lg">👥</span>
+                <span className="text-lg">🛂</span>
                 <span className="text-gray-600 hover:text-gray-950 font-medium">
-                  Employees
+                  Visa Status
                 </span>
               </Link>
             </li>
+            {/* Employee bar */}
+            {showReg && (
+              <li>
+                <Link
+                  to="/employee"
+                  className={`flex items-center space-x-3 px-5 py-1 rounded-full hover:bg-blue-100 transition-colors ${
+                    isActive("/employee")
+                      ? "bg-blue-100 text-blue-600 font-medium"
+                      : "text-gray-600 hover:bg-blue-100 hover:text-gray-900"
+                  }`}
+                >
+                  <span className="text-lg">👥</span>
+                  <span className="text-gray-600 hover:text-gray-950 font-medium">
+                    Employees
+                  </span>
+                </Link>
+              </li>
             )}
-             {/* Registration Token (HR only) */}
-             {showReg && (
-             <li>
+            {/* Registration Token (HR only) */}
+            {showReg && (
+              <li>
                 <Link
                   to="/registration-token"
                   className={`flex items-center space-x-3 px-5 py-1 rounded-full hover:bg-blue-100 transition-colors ${
-                    isActive('/registration-token')
-                      ? 'bg-blue-100 text-blue-600 font-medium'
-                      : 'text-gray-600 hover:bg-blue-100 hover:text-gray-900'
+                    isActive("/registration-token")
+                      ? "bg-blue-100 text-blue-600 font-medium"
+                      : "text-gray-600 hover:bg-blue-100 hover:text-gray-900"
                   }`}
                 >
                   <span className="text-lg">🔗</span>
@@ -97,39 +97,39 @@ function Sidebar() {
             )}
             {/* Application bar */}
             {showReg && (
-            <li>
-              <Link
-                to="/application"
-                className={`flex items-center space-x-3 px-5 py-1 rounded-full hover:bg-blue-100 transition-colors ${
-                  isActive('/application')
-                    ? 'bg-blue-100 text-blue-600 font-medium'
-                    : 'text-gray-600 hover:bg-blue-100 hover:text-gray-900'
-                }`}
-              >
-                <span className="text-lg">🔧</span>
-                <span className="text-gray-600 hover:text-gray-950 font-medium">
-                  Application
-                </span>
-              </Link>
-            </li>
+              <li>
+                <Link
+                  to="/application"
+                  className={`flex items-center space-x-3 px-5 py-1 rounded-full hover:bg-blue-100 transition-colors ${
+                    isActive("/application")
+                      ? "bg-blue-100 text-blue-600 font-medium"
+                      : "text-gray-600 hover:bg-blue-100 hover:text-gray-900"
+                  }`}
+                >
+                  <span className="text-lg">🔧</span>
+                  <span className="text-gray-600 hover:text-gray-950 font-medium">
+                    Application
+                  </span>
+                </Link>
+              </li>
             )}
             {/* Housing bar */}
             {showReg && (
-            <li>
-              <Link
-                to="/housing"
-                className={`flex items-center space-x-3 px-5 py-1 rounded-full hover:bg-blue-100 transition-colors ${
-                  isActive('/housing')
-                    ? 'bg-blue-100 text-blue-600 font-medium'
-                    : 'text-gray-600 hover:bg-blue-100 hover:text-gray-900'
-                }`}
-              >
-                <span className="text-lg">📦</span>
-                <span className="text-gray-600 hover:text-gray-950 font-medium">
-                  Housing
-                </span>
-              </Link>
-            </li>
+              <li>
+                <Link
+                  to="/house"
+                  className={`flex items-center space-x-3 px-5 py-1 rounded-full hover:bg-blue-100 transition-colors ${
+                    isActive("/housing")
+                      ? "bg-blue-100 text-blue-600 font-medium"
+                      : "text-gray-600 hover:bg-blue-100 hover:text-gray-900"
+                  }`}
+                >
+                  <span className="text-lg">📦</span>
+                  <span className="text-gray-600 hover:text-gray-950 font-medium">
+                    Housing
+                  </span>
+                </Link>
+              </li>
             )}
           </ul>
         </nav>
