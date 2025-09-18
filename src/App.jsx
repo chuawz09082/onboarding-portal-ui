@@ -21,6 +21,7 @@ import ViewHouse from "./component/hr/view-house/ViewHouseDetails";
 // ===== Protected pages (require login) =====
 import EmployeeOnboarding from "./component/user/onboarding/EmployeeOnboarding";
 import PersonalInfo from "./pages/PersonalInfo";
+import OnboardingDocuments from "./components/OnboardingDocuments";
 
 // ===== New layout + pages from teammate =====
 import Housing from "./component/user/Housing/Housing";
@@ -81,10 +82,12 @@ export default function App() {
 
         {/* Protected area (must be logged in) */}
         <Route element={<PrivateRoute />}>
+
           {/* Onboarding-only area */}
           <Route element={<RequireOnboarding />}>
             <Route path="/onboarding" element={<EmployeeOnboarding />} />
           </Route>
+
 
           {/* Main app: registered users (and HR) */}
           <Route element={<RequireRegistered />}>
