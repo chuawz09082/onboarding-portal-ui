@@ -5,14 +5,13 @@ import EditVisaStatusDialog from './EditVisaStatusDialog'
 
 const VisaStatusSection = ({ employeeId }) => {
     const dispatch = useDispatch()
-    const { statusList, loading, error, editMode } = useSelector(state => state.visaStatus)
+    const { statusList, loading,  editMode } = useSelector(state => state.visaStatus)
 
     useEffect(() => {
         dispatch(fetchVisaStatus(employeeId))
     }, [dispatch, employeeId])
 
     if (loading) return <p>Loading visa status...</p>
-    if (error) return <p>Error: {error}</p>
 
     return (
         <section>
