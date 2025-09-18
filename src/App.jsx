@@ -20,7 +20,7 @@ import House from "./component/hr/house/House";
 import ViewHouse from "./component/hr/view-house/ViewHouseDetails";
 
 // ===== Protected pages (require login) =====
-import EmployeeOnboarding from "./pages/EmployeeOnboarding";
+import EmployeeOnboarding from "./component/user/onboarding/EmployeeOnboarding";
 import PersonalInfo from "./pages/PersonalInfo";
 
 // ===== New layout + pages from teammate =====
