@@ -1,13 +1,8 @@
 import axios from 'axios';
 
-// const API_BASE =
-  // (import.meta?.env?.VITE_API_BASE ||
-    // import.meta?.env?.VITE_AUTH_BASE ||
-    // 'http://localhost:8080');
-const API_BASE = 'http://localhost:9000';
-
+// IMPORTANT: use relative so Vite proxy kicks in
 const API = axios.create({
-  baseURL: API_BASE,
+  baseURL: 'http://localhost:9000',   
 });
 
 API.interceptors.request.use((config) => {
@@ -21,22 +16,6 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
-API.interceptors.response.use(
-  (r) => r,
-  (err) => {
-    // Leave this quiet; uncomment for debugging
-    // if (err?.response?.status === 401) console.warn('401 Unauthorized');
-    return Promise.reject(err);
-  }
-);
-
-console.log('[API_BASE]', API_BASE);
-
 export default API;
-
-
-
-
-
 
 
