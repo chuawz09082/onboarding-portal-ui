@@ -20,8 +20,9 @@ import House from "./component/hr/house/House";
 import ViewHouse from "./component/hr/view-house/ViewHouseDetails";
 
 // ===== Protected pages (require login) =====
-import EmployeeOnboarding from "./pages/EmployeeOnboarding";
+import EmployeeOnboarding from "./component/user/onboarding/EmployeeOnboarding";
 import PersonalInfo from "./pages/PersonalInfo";
+import OnboardingDocuments from "./components/OnboardingDocuments";
 
 // ===== New layout + pages from teammate =====
 import Housing from "./component/user/Housing/Housing";
@@ -39,7 +40,6 @@ import PrivateRoute from "./components/PrivateRoute";
 import { getToken, isHR } from "./lib/jwt";
 
 import VisaStatus from "./pages/VisaStatus";
-import DigitalDocumentsSlice from "./redux/digitalDocumentsSlice";
 
 // Decides landing page after login based on role
 function AfterLoginRouter() {
@@ -89,7 +89,7 @@ export default function App() {
         <Route element={<PrivateRoute />}>
           {/* Everything inside uses the authenticated layout */}
           <Route path="/onboarding" element={<EmployeeOnboarding />} />
-          <Route path="/onboarding/documents" element={<DigitalDocumentsSlice />} />
+          <Route path="/onboarding/documents" element={<OnboardingDocuments />} />
           <Route element={<AppShell />}>
             {/* Existing protected pages */}
             
