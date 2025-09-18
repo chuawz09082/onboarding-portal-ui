@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   addCommentThunk,
+  addFacilityReportThunk,
   getFacilityReportByIdThunk,
   getFacilityReportsThunk,
 } from "./facility-report.thunk";
@@ -46,6 +47,17 @@ const facilityReportSlice = createSlice({
       state.error = "Error";
     });
     builder.addCase(addCommentThunk.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(addFacilityReportThunk.fulfilled, (state, action) => {
+      state.loading = false;
+      // state.facilityReportDetails = action.payload.data.data;
+    });
+    builder.addCase(addFacilityReportThunk.rejected, (state, action) => {
+      state.loading = false;
+      state.error = "Error";
+    });
+    builder.addCase(addFacilityReportThunk.pending, (state, action) => {
       state.loading = true;
     });
   },

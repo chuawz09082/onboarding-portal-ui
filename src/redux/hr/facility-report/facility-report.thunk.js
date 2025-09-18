@@ -11,6 +11,17 @@ export const getFacilityReportsThunk = createAsyncThunk(
   }
 );
 
+export const addFacilityReportThunk = createAsyncThunk(
+  "house/addFacilityReportThunk",
+  async ({ facilityId, employeeId, title, description }) => {
+    const { data } = await Axios.post(
+      `http://localhost:8084/api/v1/facilities/${facilityId}/reports`,
+      { employeeId, title, description }
+    );
+    return { data };
+  }
+);
+
 export const getFacilityReportByIdThunk = createAsyncThunk(
   "facilityReport/getFacilityReportById",
   async (id) => {
@@ -25,10 +36,10 @@ export const getFacilityReportByIdThunk = createAsyncThunk(
 // Add new comment
 export const addCommentThunk = createAsyncThunk(
   "facilityReport/addComment",
-  async ({ reportId, comment }) => {
+  async ({ reportId, comment, employeeId }) => {
     const response = await Axios.post(
       `http://localhost:8084/api/v1/facilities/reports/${reportId}/comments`,
-      { comment: comment, employeeId: 1 }
+      { comment: comment, employeeId: employeeId }
     );
     return { reportId, data: response.data };
   }
