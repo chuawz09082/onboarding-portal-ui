@@ -48,7 +48,7 @@ const ViewHouse = () => {
     if (employeesReportData.length > 0 && selectedReport) {
       setSelectedReport((prev) => ({
         ...prev,
-        employeesData: employeeData,
+        employeesData: employeesReportData,
       }));
     }
   }, [employeesReportData]);

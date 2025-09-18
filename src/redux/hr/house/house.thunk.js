@@ -30,9 +30,9 @@ export const deleteHouseThunk = createAsyncThunk(
 
 export const getHouseByIdThunk = createAsyncThunk(
   "house/getHouseByIdThunk",
-  async (id, thunkAPI) => {
+  async (houseId, thunkAPI) => {
     const response = await Axios.get(
-      "http://localhost:8084/api/v1/houses/" + id
+      "http://localhost:8084/api/v1/houses/" + houseId
     );
 
     const data = response.data.data;
