@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { fetchDocuments, uploadDocument } from '../redux/documentsSlice'
 
+const API = import.meta.env.VITE_API_BASE ?? 'http://localhost:8080' // or use your http.js wrapper
+
 const FileUploadSection = ({ employeeId, currentVisaType }) => {
   const dispatch = useDispatch()
   const { documents, loading, error } = useSelector(state => state.documents)
@@ -23,9 +25,9 @@ const FileUploadSection = ({ employeeId, currentVisaType }) => {
     )
 
   const f1UploadSequence = [
-    { type: 'I20',     label: 'Upload I-20',             msg: 'Please upload your I-20' },
+    { type: 'I20', label: 'Upload I-20', msg: 'Please upload your I-20' },
     { type: 'Receipt', label: 'Upload OPT STEM Receipt', msg: 'Please upload your OPT STEM Receipt' },
-    { type: 'EAD',     label: 'Upload OPT STEM EAD',     msg: 'Please upload your OPT STEM EAD' },
+    { type: 'EAD', label: 'Upload OPT STEM EAD', msg: 'Please upload your OPT STEM EAD' },
   ]
   const nextStepIndex = f1UploadSequence.findIndex(step => !hasDoc(step.type))
 
@@ -57,6 +59,29 @@ const FileUploadSection = ({ employeeId, currentVisaType }) => {
       .finally(() => { e.target.value = '' }) // allow re-choosing same file
   }
 
+  //auth+blob to replace href
+  async function authFetchBlob(url) {
+    const token = sessionStorage.getItem('access_token') // wherever you store it
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    return await res.blob()
+  }
+
+  async function handleDownload() {
+    const url = `${API}/api/visa/download/i983.pdf`
+    const blob = await authFetchBlob(url)
+    const blobUrl = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = blobUrl
+    a.download = "i983.pdf"
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    // optional: URL.revokeObjectURL(blobUrl)
+  }
+
   return (
     <section>
       <h2>File Upload Section</h2>
@@ -76,16 +101,19 @@ const FileUploadSection = ({ employeeId, currentVisaType }) => {
       {currentVisaType === 'F1 (CPT/OPT)' ? (
         <>
           {/* If this endpoint needs auth, switch to a fetch+blob flow */}
-          <a
+          {/* <a
             className="btn"
-            href="http://localhost:8080/api/visa/download/i983.pdf"
+            href="http://localhost:9000/api/visa/download/i983.pdf"
             download="i983.pdf"
             target="_blank"
             rel="noopener noreferrer"
             style={{ marginBottom: '0.75rem', display: 'inline-block' }}
           >
             Download I-983
-          </a>
+          </a> */}
+          <button onClick={() => handleDownload()}>
+            Download I-983
+          </button>
 
           {nextStepIndex >= 0 ? (
             <>

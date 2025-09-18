@@ -297,8 +297,8 @@ export default function EmployeeOnboarding() {
       ];
       try {
         if (Object.keys(payload).length > 0) {
-          const employeeResponse = await axios.post(
-            "http://localhost:8083/api/v1/employees",
+          const payloadResponse = await axios.post(
+            "http://localhost:9000/employee-service/api/v1/employees",
             payload,
             {
               headers: {
@@ -311,7 +311,7 @@ export default function EmployeeOnboarding() {
           const raw = String(accessToken).trim().replace(/^"|"$/g, "");
           const token = /^Bearer\s/i.test(raw) ? raw : `Bearer ${raw}`;
           const onboardingUpdateResponse = await axios.put(
-            "http://localhost:8081/api/onboarding/me/profile",
+            "http://localhost:9000/application-service/api/onboarding/me/profile",
             { comment: "Profile completed" },
             {
               headers: {

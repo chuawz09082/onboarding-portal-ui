@@ -9,6 +9,7 @@ import facilityReport from '../hr/facility-report/facility-report.slice';
 // New slices from the other store
 import visaStatus from '../visaStatusSlice';
 import documents from '../documentsSlice';
+import digitalDocuments from '../digitalDocumentsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -21,6 +22,7 @@ export const store = configureStore({
     // add the new feature keys
     visaStatus,
     documents,
+    digitalDocuments,
   },
   devTools: true,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
