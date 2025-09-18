@@ -4,7 +4,13 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "../../../App.css";
 import API from "../../../lib/http";
-import { getLocalEmailFallback, getUsername } from "../../../lib/jwt";
+import {
+  getLocalEmailFallback,
+  getToken,
+  getUsername,
+  isHR,
+  parseJwt,
+} from "../../../lib/jwt";
 import { logout } from "../../../redux/store/authSlice";
 
 const emailRegex = /^\S+@\S+\.\S+$/;
@@ -56,7 +62,7 @@ export default function EmployeeOnboarding() {
     address: "",
     cellPhone: "",
     workPhone: "",
-    email: "dsd@fdwa.com",
+    email: "",
     ssn: "",
     dob: "",
     gender: "",
@@ -118,19 +124,35 @@ export default function EmployeeOnboarding() {
     nav("/login", { replace: true });
   }
 
+  let userId = "";
   // ---- Fetch email from DB first, then userinfo, then local fallback ----
   useEffect(() => {
-    // const access = getToken();
-    // if (!access) { nav('/login', { replace: true }); return; }
-    // try { if (isHR(access)) { nav('/hr/onboarding', { replace: true }); return; } } catch {}
-
+    const access = getToken();
+    if (!access) {
+      nav("/login", { replace: true });
+      return;
+    }
+    try {
+      if (isHR(access)) {
+        nav("/hr/onboarding", { replace: true });
+        return;
+      }
+    } catch {}
+    userId = (parseJwt(access)?.sub || "").toString();
     (async () => {
       let resolved = "";
 
       // 1) Your application service (database-backed)
       try {
-        const r = await API.get("/application-service/api/onboarding/me", {
+        const raw = String(t).trim().replace(/^"|"$/g, "");
+        const token = /^Bearer\s/i.test(raw) ? raw : `Bearer ${raw}`;
+
+        const r = await API.get("http://localhost:8081/api/onboarding/me", {
           validateStatus: () => true,
+          headers: {
+            Authorization: token,
+            Accept: "application/json",
+          },
         });
         if (
           r.status === 200 &&
@@ -249,7 +271,7 @@ export default function EmployeeOnboarding() {
       setBusy(true);
       const payload = { ...form };
 
-      payload.userId = 1; //TODO: get from token
+      payload.userId = userId;
       payload.visaStatus = [
         {
           visaType: form.citizenOrPr ? form.citizenOrPr : form.workAuth,
@@ -274,8 +296,6 @@ export default function EmployeeOnboarding() {
         },
       ];
       try {
-        const fileUploadResults = await uploadAllFiles();
-
         if (Object.keys(payload).length > 0) {
           const payloadResponse = await axios.post(
             "http://localhost:9000/employee-service/api/v1/employees",
@@ -287,19 +307,27 @@ export default function EmployeeOnboarding() {
               validateStatus: () => true,
             }
           );
+          const accessToken = getToken();
+          const raw = String(accessToken).trim().replace(/^"|"$/g, "");
+          const token = /^Bearer\s/i.test(raw) ? raw : `Bearer ${raw}`;
           const onboardingUpdateResponse = await axios.put(
             "http://localhost:9000/application-service/api/onboarding/me/profile",
             { comment: "Profile completed" },
             {
               headers: {
-                "Content-Type": "application/json",
+                Authorization: token,
+                Accept: "application/json",
               },
               validateStatus: () => true,
             }
           );
+          const fileUploadResults = await uploadAllFiles(
+            employeeResponse.data.data.id
+          );
+          nav("/application", { replace: true });
         }
       } catch (error) {
-        console.error("File upload failed:", error);
+        console.error(error);
       }
     } catch (err) {
       console.log("error", err);
@@ -308,7 +336,7 @@ export default function EmployeeOnboarding() {
       setBusy(false);
     }
   }
-  const uploadSingleFile = async (file, fileType, comment = "") => {
+  const uploadSingleFile = async (file, fileType, comment = "", employeeId) => {
     const fd = new FormData();
     fd.append("file", file); // Backend expects "file" parameter
     fd.append("type", fileType); // Backend expects "type" parameter
@@ -316,28 +344,30 @@ export default function EmployeeOnboarding() {
     if (comment) {
       fd.append("comment", comment); // Optional "comment" parameter
     }
-
     try {
+      const accessToken = getToken();
+      const raw = String(accessToken).trim().replace(/^"|"$/g, "");
+      const token = /^Bearer\s/i.test(raw) ? raw : `Bearer ${raw}`;
       const response = await axios.post(
-        `http://localhost:8085/api/visa/employee/mongo_emp_001/upload`,
+        `http://localhost:8085/api/visa/employee/${employeeId}/upload`,
         fd,
         {
           headers: {
             "Content-Type": "multipart/form-data",
+            Authorization: token,
           },
           validateStatus: () => true,
         }
       );
 
       console.log(`${fileType} upload response:`, response);
-      return response;
     } catch (error) {
       console.error(`${fileType} upload error:`, error);
       throw error;
     }
   };
 
-  const uploadAllFiles = async () => {
+  const uploadAllFiles = async (employeeId) => {
     const results = [];
 
     // Determine appropriate types for each file (check with backend team for exact values)
@@ -346,27 +376,31 @@ export default function EmployeeOnboarding() {
         await uploadSingleFile(
           dlFile,
           "driving_license",
-          "Driver's license document"
+          "Driver's license document",
+          employeeId
         )
       );
     }
-
     if (avatarFile) {
       results.push(
-        await uploadSingleFile(avatarFile, "avatar", "Profile picture")
+        await uploadSingleFile(
+          avatarFile,
+          "avatar",
+          "Profile picture",
+          employeeId
+        )
       );
     }
-
     if (workAuthFile) {
       results.push(
         await uploadSingleFile(
           workAuthFile,
           "work_authorization",
-          "Work authorization document"
+          "Work authorization document",
+          employeeId
         )
       );
     }
-
     return results;
   };
 
@@ -513,6 +547,8 @@ export default function EmployeeOnboarding() {
           placeholder="Email *"
           value={form.email}
           aria-readonly="true"
+          disabled
+          style={{ backgroundColor: "#f5f5f5", color: "#666" }}
         />
 
         <div
