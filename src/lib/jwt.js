@@ -103,3 +103,15 @@ export function getLocalEmailFallback() {
   }
   return resolved;
 }
+
+export function isEmployee(token) {
+  const roles = getRolesFromToken(token).map(String).map(r => r.toUpperCase());
+  return roles.includes('EMPLOYEE') || roles.includes('ROLE_EMPLOYEE');
+}
+
+export function isEmployeeOnly(token) {
+  const roles = getRolesFromToken(token).map(String).map(r => r.toUpperCase());
+  const hasEmp = roles.includes('EMPLOYEE') || roles.includes('ROLE_EMPLOYEE');
+  const hasHR  = roles.includes('HR') || roles.includes('ROLE_HR');
+  return hasEmp && !hasHR;
+}

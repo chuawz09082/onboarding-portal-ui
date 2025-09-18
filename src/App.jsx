@@ -45,6 +45,7 @@ import {
   RequireOnboarding,
   AfterLoginLanding,
 } from "./routes/guards/RequireState";
+import RequireEmployee from './routes/guards/RequireEmployee';
 
 // Optional: you can remove this if not used elsewhere
 function AdminPage() {
@@ -100,10 +101,13 @@ export default function App() {
               <Route path="/employee/:id" element={<EmployeeDetail />} />
               <Route path="/registration-token" element={<RegistrationToken />} />
               <Route path="/application" element={<Application />} />
-              <Route path="/visa-status" element={<VisaStatus />} />
+              <Route element={<RequireEmployee />}>
+        <Route path="/visa-status" element={<VisaStatus />} />
+      </Route>
             </Route>
           </Route>
         </Route>
+
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
