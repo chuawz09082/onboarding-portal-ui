@@ -76,13 +76,11 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* Public HR demo pages (leave public if you want them visible without auth) */}
-        <Route path="/house" element={<House />} />
-        <Route path="/add-house" element={<AddHouse />} />
-        <Route path="/house/:id" element={<ViewHouse />} />
 
+        {/* Public HR demo pages (leave public if you want them visible without auth) */}
         {/* Protected area (must be logged in) */}
         <Route element={<PrivateRoute />}>
+
 
           {/* Onboarding-only area */}
           <Route element={<RequireOnboarding />}>
@@ -97,6 +95,9 @@ export default function App() {
               <Route path="/personal-info" element={<PersonalInfo />} />
               <Route path="/admin" element={<AdminPage />} />
               <Route path="/housing" element={<Housing />} />
+              <Route path="/house" element={<House />} />
+              <Route path="/add-house" element={<AddHouse />} />
+              <Route path="/house/:id" element={<ViewHouse />} />
               <Route path="/employee" element={<Employee />} />
               <Route path="/employee/:id" element={<EmployeeDetail />} />
               <Route path="/registration-token" element={<RegistrationToken />} />
@@ -105,6 +106,7 @@ export default function App() {
         <Route path="/visa-status" element={<VisaStatus />} />
       </Route>
             </Route>
+
           </Route>
         </Route>
 

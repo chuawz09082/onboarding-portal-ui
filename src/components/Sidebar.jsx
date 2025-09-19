@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { getToken, isHR, isEmployeeOnly } from '../lib/jwt';
@@ -6,6 +7,7 @@ function Sidebar() {
   const location = useLocation();
   const isActive = (path) => location.pathname === path;
 
+
   const token = getToken?.();
   const hr = token && isHR(token);
   const employeeOnly = token && isEmployeeOnly(token);
@@ -13,6 +15,7 @@ function Sidebar() {
 
   // HR-only sections flag (you already had this)
   const showReg = !!(token && hr);
+
 
   return (
     <>
@@ -63,6 +66,7 @@ function Sidebar() {
             )}
 
             {/* Employees (HR-only) */}
+
             {showReg && (
               <li>
                 <Link
@@ -80,6 +84,7 @@ function Sidebar() {
             )}
 
             {/* Registration Token (HR-only) */}
+
             {showReg && (
               <li>
                 <Link
@@ -117,7 +122,7 @@ function Sidebar() {
             {showReg && (
               <li>
                 <Link
-                  to="/housing"
+                  to="/house"
                   className={`flex items-center space-x-3 px-5 py-1 rounded-full transition-colors ${
                     isActive('/housing')
                       ? 'bg-blue-100 text-blue-600 font-medium'

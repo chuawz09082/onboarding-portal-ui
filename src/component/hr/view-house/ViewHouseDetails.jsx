@@ -26,6 +26,9 @@ import {
   getHouseByIdThunk,
 } from "../../../redux/hr/house/house.thunk";
 
+import { selectEmployeeReportData } from "../../../redux/employee/personal-info/personal-info.selector";
+import { getPersonalInfoByIdsThunk } from "../../../redux/employee/personal-info/personal-info.thunk";
+
 const ITEMS_PER_PAGE = 3;
 
 const ViewHouse = () => {
@@ -38,6 +41,17 @@ const ViewHouse = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedReport, setSelectedReport] = useState(null);
+
+  const employeesReportData = useSelector(selectEmployeeReportData);
+
+  useEffect(() => {
+    if (employeesReportData.length > 0 && selectedReport) {
+      setSelectedReport((prev) => ({
+        ...prev,
+        employeesData: employeesReportData,
+      }));
+    }
+  }, [employeesReportData]);
 
   useEffect(() => {
     // Fetch house details
@@ -79,7 +93,17 @@ const ViewHouse = () => {
     dispatch(getFacilityReportByIdThunk(reportId))
       .unwrap()
       .then((report) => {
-        setSelectedReport(report.data);
+        const employeeIds = report.data.facilityReportDetailsResponseList?.map(
+          (detail) => detail.employeeId
+        );
+        dispatch(getPersonalInfoByIdsThunk(employeeIds))
+          .unwrap()
+          .then((employeeData) => {
+            setSelectedReport((prev) => ({
+              ...report.data,
+              employeeData: employeeData,
+            }));
+          });
       })
       .catch((err) => {
         console.error("Failed to fetch report details:", err);
@@ -280,7 +304,18 @@ const ViewHouse = () => {
                         <ListGroup.Item key={`${c.id || idx}-${idx}`}>
                           <p>{c.comment}</p>
                           <small>
-                            By {c.employeeId} on{" "}
+                            By{" "}
+                            {selectedReport.employeeData?.find(
+                              (e) => e.employeeId == c.employeeId
+                            )?.preferredName ||
+                              selectedReport.employeeData?.find(
+                                (e) => e.employeeId == c.employeeId
+                              )?.firstName +
+                                selectedReport.employeeData?.find(
+                                  (e) => e.employeeId == c.employeeId
+                                )?.lastName ||
+                              "Unknown"}{" "}
+                            on{" "}
                             {new Date(
                               c.lastModificationDate || c.createDate
                             ).toLocaleString()}

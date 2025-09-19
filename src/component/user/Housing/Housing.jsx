@@ -12,14 +12,22 @@ import { useDispatch } from "react-redux";
 import { selectFacilityReport } from "../../../redux/hr/facility-report/facility-report.selector";
 import {
   addCommentThunk,
+  addFacilityReportThunk,
   getFacilityReportByIdThunk,
   getFacilityReportsThunk,
   updateCommentThunk,
 } from "../../../redux/hr/facility-report/facility-report.thunk";
+
+import { getToken } from "../../../lib/jwt";
 import {
   getEmployeeByHouseIdThunk,
   getHouseByIdThunk,
 } from "../../../redux/hr/house/house.thunk";
+
+import axios from "axios";
+import { selectEmployeeReportData } from "../../../redux/employee/personal-info/personal-info.selector";
+import { getPersonalInfoByIdsThunk } from "../../../redux/employee/personal-info/personal-info.thunk";
+
 const ITEMS_PER_PAGE = 3;
 const Housing = () => {
   const dispatch = useDispatch();
@@ -29,19 +37,37 @@ const Housing = () => {
 
   const [showNewReportModal, setShowNewReportModal] = useState(false);
   const [newReport, setNewReport] = useState({ title: "", description: "" });
+  const [employeeId, setEmployeeId] = useState();
+  const [houseId, setHouseId] = useState();
+  const employeesReportData = useSelector(selectEmployeeReportData);
 
   useEffect(() => {
-    const employeeId = 1; // Replace with actual employee ID
-    const houseId = 7;
-    dispatch(getHouseByIdThunk(houseId)).then((res) => {
-      // After house fetched, fetch facility reports
-      if (res.payload?.facilityList) {
-        res.payload.facilityList.forEach((facility) => {
-          dispatch(getFacilityReportsThunk(facility.id));
+    if (employeesReportData.length > 0 && selectedReport) {
+      setSelectedReport((prev) => ({
+        ...prev,
+        employeesData: employeesReportData,
+      }));
+    }
+  }, [employeesReportData]);
+
+  useEffect(() => {
+    const access = getToken();
+    const userId = parseJwt(access)?.sub.toString();
+    // const userId = "6";
+    axios
+      .get(`http://localhost:8083/api/employees/by-user/${userId}`)
+      .then((result) => {
+        setEmployeeId(result.data.id);
+        setHouseId(result.data.houseId);
+        dispatch(getHouseByIdThunk(result.data.houseId)).then((res) => {
+          if (res.payload?.facilityList) {
+            res.payload.facilityList.forEach((facility) => {
+              dispatch(getFacilityReportsThunk(facility.id));
+            });
+          }
         });
-      }
-    });
-    dispatch(getEmployeeByHouseIdThunk(houseId));
+        dispatch(getEmployeeByHouseIdThunk(houseId));
+      });
   }, [dispatch]);
   if (!house) {
     return <div>Loading...</div>;
@@ -60,11 +86,31 @@ const Housing = () => {
 
   const totalPages = Math.ceil(sortedReports.length / ITEMS_PER_PAGE);
 
+  const facilityCounts = { Bed: 0, Mattress: 0, Table: 0, Chair: 0 };
+  house.facilityList?.forEach((facility) => {
+    if (facility.type in facilityCounts) {
+      facilityCounts[facility.type] += facility.quantity;
+    }
+  });
+
+  const [selectedFacilityId, setSelectedFacilityId] = useState("");
+
   const handleViewReport = (reportId) => {
     dispatch(getFacilityReportByIdThunk(reportId))
       .unwrap()
       .then((report) => {
-        setSelectedReport(report.data);
+        const employeeIds = report.data.facilityReportDetailsResponseList?.map(
+          (detail) => detail.employeeId
+        );
+
+        dispatch(getPersonalInfoByIdsThunk(employeeIds))
+          .unwrap()
+          .then((employeeData) => {
+            setSelectedReport((prev) => ({
+              ...report.data,
+              employeeData: employeeData,
+            }));
+          });
       })
       .catch((err) => {
         console.error("Failed to fetch report details:", err);
@@ -120,6 +166,27 @@ const Housing = () => {
               ) : (
                 <p>No employees assigned to this house.</p>
               )}
+            </ListGroup.Item>
+          </ListGroup>
+        </Card.Body>
+      </Card>
+      <Card className="mb-4">
+        <Card.Header>
+          <h3>Facility Information</h3>
+        </Card.Header>
+        <Card.Body>
+          <ListGroup variant="flush">
+            <ListGroup.Item>
+              <strong>Number of Beds:</strong> {facilityCounts.Bed}
+            </ListGroup.Item>
+            <ListGroup.Item>
+              <strong>Number of Mattresses:</strong> {facilityCounts.Mattress}
+            </ListGroup.Item>
+            <ListGroup.Item>
+              <strong>Number of Tables:</strong> {facilityCounts.Table}
+            </ListGroup.Item>
+            <ListGroup.Item>
+              <strong>Number of Chairs:</strong> {facilityCounts.Chair}
             </ListGroup.Item>
           </ListGroup>
         </Card.Body>
@@ -199,6 +266,21 @@ const Housing = () => {
           <Modal.Title>New Facility Report</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          <select
+            className="form-select mb-2"
+            value={selectedFacilityId}
+            onChange={(e) => {
+              setSelectedFacilityId(e.target.value);
+              setNewReport({ ...newReport });
+            }}
+          >
+            <option value="">Select Facility</option>
+            {house.facilityList?.map((facility) => (
+              <option key={facility.id} value={facility.id}>
+                {facility.type}
+              </option>
+            ))}
+          </select>
           <input
             type="text"
             className="form-control mb-2"
@@ -232,8 +314,9 @@ const Housing = () => {
             variant="primary"
             onClick={() => {
               dispatch(
-                createFacilityReportThunk({
-                  houseId: house.id,
+                addFacilityReportThunk({
+                  facilityId: selectedFacilityId,
+                  employeeId: employeeId,
                   title: newReport.title,
                   description: newReport.description,
                 })
@@ -241,7 +324,13 @@ const Housing = () => {
                 setShowNewReportModal(false);
                 setNewReport({ title: "", description: "" });
                 // refresh reports
-                dispatch(getFacilityReportsByHouseIdThunk(house.id));
+                dispatch(getHouseByIdThunk(houseId)).then((res) => {
+                  if (res.payload?.facilityList) {
+                    res.payload.facilityList.forEach((facility) => {
+                      dispatch(getFacilityReportsThunk(facility.id));
+                    });
+                  }
+                });
               });
             }}
           >
@@ -284,10 +373,23 @@ const Housing = () => {
                         <ListGroup.Item key={`${c.id || idx}-${idx}`}>
                           <p>{c.comment}</p>
                           <small>
-                            By {c.employeeId} on{" "}
-                            {new Date(
-                              c.lastModificationDate || c.createDate
-                            ).toLocaleString()}
+                            <small>
+                              By{" "}
+                              {selectedReport.employeeData?.find(
+                                (e) => e.employeeId == c.employeeId
+                              )?.preferredName ||
+                                selectedReport.employeeData?.find(
+                                  (e) => e.employeeId == c.employeeId
+                                )?.firstName +
+                                  selectedReport.employeeData?.find(
+                                    (e) => e.employeeId == c.employeeId
+                                  )?.lastName ||
+                                "Unknown"}{" "}
+                              on{" "}
+                              {new Date(
+                                c.lastModificationDate || c.createDate
+                              ).toLocaleString()}
+                            </small>
                           </small>
                           <Button
                             size="sm"
@@ -348,6 +450,7 @@ const Housing = () => {
                         addCommentThunk({
                           reportId: selectedReport.id,
                           comment: newComment,
+                          employeeId,
                         })
                       ).then(() => {
                         setNewComment("");
