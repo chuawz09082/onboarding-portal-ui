@@ -86,6 +86,7 @@ function Sidebar() {
 
             {/* Employees (HR-only) */}
 
+
             {showReg && (
               <li>
                 <Link
@@ -119,6 +120,25 @@ function Sidebar() {
                 </Link>
               </li>
             )}
+
+                         {/* Visa Status Management( HR) */}
+ {showReg && (
+   <li>
+     <Link
+       to="/hr/visa"
+       className={`flex items-center space-x-3 px-5 py-1 rounded-full transition-colors ${
+         isActive('/hr/visa')
+           ? 'bg-blue-100 text-blue-600 font-medium'
+           : 'text-gray-600 hover:bg-blue-100 hover:text-gray-900'
+       }`}
+     >
+       <span className="text-lg">🛂</span>
+       <span className="text-gray-600 hover:text-gray-950 font-medium">
+         Visa Status Management
+       </span>
+     </Link>
+   </li>
+ )}
 
             {/* Application (HR-only) */}
             {showReg && (
