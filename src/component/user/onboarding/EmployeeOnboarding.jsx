@@ -103,6 +103,8 @@ export default function EmployeeOnboarding() {
   const [workAuthFile, setWorkAuthFile] = useState(null);
   const [dlFile, setDlFile] = useState(null);
 
+  const [userId, setUserId] = useState("");
+
   const isCitizenOrPR = useMemo(
     () => form.citizenOrPr === "CITIZEN" || form.citizenOrPr === "GREENCARD",
     [form.citizenOrPr]
@@ -124,7 +126,7 @@ export default function EmployeeOnboarding() {
     nav("/login", { replace: true });
   }
 
-  let userId = "";
+  //let userId = "";
   // ---- Fetch email from DB first, then userinfo, then local fallback ----
   useEffect(() => {
     const access = getToken();
@@ -138,7 +140,9 @@ export default function EmployeeOnboarding() {
         return;
       }
     } catch {}
-    userId = (parseJwt(access)?.sub || "").toString();
+    setUserId((parseJwt(access)?.sub || "").toString());
+    //userId = (parseJwt(access)?.sub || "").toString();
+    //console.log(`userid: ${userId}`);
     (async () => {
       let resolved = "";
 
@@ -147,7 +151,7 @@ export default function EmployeeOnboarding() {
         const raw = String(t).trim().replace(/^"|"$/g, "");
         const token = /^Bearer\s/i.test(raw) ? raw : `Bearer ${raw}`;
 
-        const r = await API.get("http://localhost:8081/api/onboarding/me", {
+        const r = await API.get("http://localhost:9000/application-service/api/onboarding/me", {
           validateStatus: () => true,
           headers: {
             Authorization: token,
@@ -242,7 +246,7 @@ export default function EmployeeOnboarding() {
     }
 
     if (form.hasDL === "YES") {
-      if (!form.dlNumber.trim()) return "Driver’s license number required";
+      if (!form.dlNumber) return "Driver’s license number required";
       if (!form.dlExpire) return "Driver’s license expiration date required";
       if (!dlFile) return "Please upload a copy of your driver’s license";
     }
@@ -270,8 +274,10 @@ export default function EmployeeOnboarding() {
     try {
       setBusy(true);
       const payload = { ...form };
+      console.log(`userid: ${userId}`);
 
       payload.userId = userId;
+      payload.employeeId = userId;
       payload.visaStatus = [
         {
           visaType: form.citizenOrPr ? form.citizenOrPr : form.workAuth,
@@ -322,7 +328,7 @@ export default function EmployeeOnboarding() {
             }
           );
           const fileUploadResults = await uploadAllFiles(
-            employeeResponse.data.data.id
+            payloadResponse.data.data.userId
           );
           nav("/application", { replace: true });
         }
@@ -740,7 +746,8 @@ export default function EmployeeOnboarding() {
             <>
               <input
                 className="auth-input"
-                placeholder="DL Number *"
+                type="date"
+                // placeholder="DL Number *"
                 value={form.dlNumber}
                 onChange={(e) => setField("dlNumber", e.target.value)}
               />
