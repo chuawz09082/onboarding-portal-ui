@@ -34,6 +34,7 @@ import Employee from "./pages/Employee";
 import Home from "./pages/Home";
 import RegistrationToken from "./pages/RegistrationToken";
 import VisaStatus from "./pages/VisaStatus";
+import ApplicationStatus from './pages/ApplicationStatus';
 
 // ===== Auth utils / guard =====
 import PrivateRoute from "./components/PrivateRoute";
@@ -104,6 +105,7 @@ export default function App() {
               <Route path="/application" element={<Application />} />
               <Route element={<RequireEmployee />}>
         <Route path="/visa-status" element={<VisaStatus />} />
+        <Route path="/application/status" element={<ApplicationStatus />} />
       </Route>
             </Route>
 
