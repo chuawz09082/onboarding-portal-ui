@@ -36,6 +36,7 @@ import RegistrationToken from "./pages/RegistrationToken";
 import VisaStatus from "./pages/VisaStatus";
 import ApplicationStatus from './pages/ApplicationStatus';
 import ApplicationDetail from "./pages/ApplicationDetail";
+import VisaStatusManagementHR from './pages/VisaStatusManagementHR';
 
 // ===== Auth utils / guard =====
 import PrivateRoute from "./components/PrivateRoute";
@@ -48,6 +49,8 @@ import {
   AfterLoginLanding,
 } from "./routes/guards/RequireState";
 import RequireEmployee from './routes/guards/RequireEmployee';
+import RequireHR from './routes/guards/RequireHR';
+
 
 // Optional: you can remove this if not used elsewhere
 function AdminPage() {
@@ -96,8 +99,9 @@ export default function App() {
             <Route element={<AppShell />}>
               <Route path="/home" element={<Home />} />
               <Route path="/personal-info" element={<PersonalInfo />} />
+              <Route element={<RequireHR />}>
               <Route path="/admin" element={<AdminPage />} />
-              <Route path="/housing" element={<Housing />} />
+              <Route path="/hr/visa" element={<VisaStatusManagementHR />} />
               <Route path="/house" element={<House />} />
               <Route path="/add-house" element={<AddHouse />} />
               <Route path="/house/:id" element={<ViewHouse />} />
@@ -106,10 +110,11 @@ export default function App() {
               <Route path="/registration-token" element={<RegistrationToken />} />
               <Route path="/application" element={<Application />} />
               <Route path="/application/:awfId" element={<ApplicationDetail />} />
-
+              </Route>
               <Route element={<RequireEmployee />}>
                 <Route path="/visa-status" element={<VisaStatus />} />
                 <Route path="/application/status" element={<ApplicationStatus />} />
+                <Route path="/housing" element={<Housing />} />
               </Route>
             </Route>
 
