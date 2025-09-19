@@ -55,7 +55,9 @@ const Housing = () => {
     const userId = parseJwt(access)?.sub.toString();
     // const userId = "6";
     axios
-      .get(`http://localhost:8083/api/employees/by-user/${userId}`)
+      .get(
+        `http://localhost:9000/employee-service/api/employees/by-user/${userId}`
+      )
       .then((result) => {
         setEmployeeId(result.data.id);
         setHouseId(result.data.houseId);

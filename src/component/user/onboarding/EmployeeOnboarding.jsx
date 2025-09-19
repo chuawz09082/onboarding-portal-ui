@@ -151,7 +151,7 @@ export default function EmployeeOnboarding() {
         const raw = String(t).trim().replace(/^"|"$/g, "");
         const token = /^Bearer\s/i.test(raw) ? raw : `Bearer ${raw}`;
 
-        const r = await API.get("http://localhost:9000/application-service/api/onboarding/me", {
+        const r = await API.get("/api/onboarding/me", {
           validateStatus: () => true,
           headers: {
             Authorization: token,
@@ -355,7 +355,7 @@ export default function EmployeeOnboarding() {
       const raw = String(accessToken).trim().replace(/^"|"$/g, "");
       const token = /^Bearer\s/i.test(raw) ? raw : `Bearer ${raw}`;
       const response = await axios.post(
-        `http://localhost:8085/api/visa/employee/${employeeId}/upload`,
+        `http://localhost:9000/visa-service/api/visa/employee/${employeeId}/upload`,
         fd,
         {
           headers: {
