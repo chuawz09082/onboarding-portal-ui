@@ -77,6 +77,7 @@ function Home() {
       {/* Welcome Section (everyone can see) */}
       <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
         <h1 className="text-2xl font-bold text-gray-900 mb-4">Welcome to Onboarding Portal</h1>
+
         {!isHR ? ( <p className="text-gray-600">Track your onboarding processes.</p>)
         :( <p className="text-gray-600">Track and manage employee applications and onboarding processes.</p>)}
       </div>
