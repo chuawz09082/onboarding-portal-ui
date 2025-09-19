@@ -11,6 +11,23 @@ export function getIdToken() {
   );
 }
 
+export function getAccessToken() {
+  return sessionStorage.getItem('access_token') || '';
+}
+
+export function getEmployeeId() {
+  // Option 1: stored after profile fetch
+  const id = sessionStorage.getItem('employee_id');
+  if (id) return id;
+
+  // Option 2 (fallback): decode JWT 'sub' then map to employee by calling by-user endpoint elsewhere in app
+  return '';
+}
+
+export function setEmployeeId(id) {
+  if (id) sessionStorage.setItem('employee_id', id);
+}
+
 // -------- Utils --------
 function safeAtob(b64) {
   if (typeof atob !== 'undefined') return atob(b64);
