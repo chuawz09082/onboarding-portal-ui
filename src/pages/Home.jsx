@@ -77,16 +77,13 @@ function Home() {
       {/* Welcome Section (everyone can see) */}
       <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
         <h1 className="text-2xl font-bold text-gray-900 mb-4">Welcome to Onboarding Portal</h1>
-        <p className="text-gray-600">Track and manage employee applications and onboarding processes.</p>
+        {!isHR ? ( <p className="text-gray-600">Track your onboarding processes.</p>)
+        :( <p className="text-gray-600">Track and manage employee applications and onboarding processes.</p>)}
       </div>
 
       {/* HR-only Application Tracking */}
-      {!isHR ? (
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Application Tracking</h2>
-          
-        </div>
-      ) : (
+      {isHR &&
+(
         <div className="bg-white rounded-lg shadow-sm p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
