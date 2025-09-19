@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import Axios from "axios";
 import { getFacilityReportsThunk } from "../facility-report/facility-report.thunk";
-const url = "http://localhost:9000/house-service"
+const url = "http://localhost:9000/housing-service";
 export const getHouseListThunk = createAsyncThunk(
   "house/getHouseListThunk",
   async () => {
@@ -13,10 +13,7 @@ export const getHouseListThunk = createAsyncThunk(
 export const addHouseThunk = createAsyncThunk(
   "house/addHouseThunk",
   async (house) => {
-    const { data } = await Axios.post(
-      `${url}/api/v1/houses`,
-      house
-    );
+    const { data } = await Axios.post(`${url}/api/v1/houses`, house);
     return data;
   }
 );
@@ -31,9 +28,7 @@ export const deleteHouseThunk = createAsyncThunk(
 export const getHouseByIdThunk = createAsyncThunk(
   "house/getHouseByIdThunk",
   async (houseId, thunkAPI) => {
-    const response = await Axios.get(
-      `${url}/api/v1/houses/` + houseId
-    );
+    const response = await Axios.get(`${url}/api/v1/houses/` + houseId);
 
     const data = response.data.data;
 
