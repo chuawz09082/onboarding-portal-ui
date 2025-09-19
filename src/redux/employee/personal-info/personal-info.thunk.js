@@ -20,7 +20,7 @@ export const getPersonalInfoByIdsThunk = createAsyncThunk(
   "personalInfo/getPersonalInfoByIdsThunk",
   async (employeeIds) => {
     const response = await axios.post(
-      "http://localhost:8083/api/v1/employees/by-ids",
+      "http://localhost:9000/employee-service/api/v1/employees/by-ids",
       employeeIds
     );
 
