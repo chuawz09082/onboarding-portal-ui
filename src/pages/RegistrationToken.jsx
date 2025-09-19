@@ -15,7 +15,6 @@ export default function RegistrationToken() {
     <>
       {/* Breadcrumb like teammates’ pages */}
       <Breadcrumb items={[
-        { label: 'Application', href: '/application' },
         { label: 'Registration Link', href: '/registration-token' },
       ]} />
       <br />

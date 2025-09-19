@@ -35,6 +35,7 @@ import Home from "./pages/Home";
 import RegistrationToken from "./pages/RegistrationToken";
 import VisaStatus from "./pages/VisaStatus";
 import ApplicationStatus from './pages/ApplicationStatus';
+import ApplicationDetail from "./pages/ApplicationDetail";
 
 // ===== Auth utils / guard =====
 import PrivateRoute from "./components/PrivateRoute";
@@ -91,6 +92,7 @@ export default function App() {
 
           {/* Main app: registered users (and HR) */}
           <Route element={<RequireRegistered />}>
+
             <Route element={<AppShell />}>
               <Route path="/home" element={<Home />} />
               <Route path="/personal-info" element={<PersonalInfo />} />
@@ -103,10 +105,12 @@ export default function App() {
               <Route path="/employee/:id" element={<EmployeeDetail />} />
               <Route path="/registration-token" element={<RegistrationToken />} />
               <Route path="/application" element={<Application />} />
+              <Route path="/application/:awfId" element={<ApplicationDetail />} />
+
               <Route element={<RequireEmployee />}>
-        <Route path="/visa-status" element={<VisaStatus />} />
-        <Route path="/application/status" element={<ApplicationStatus />} />
-      </Route>
+                <Route path="/visa-status" element={<VisaStatus />} />
+                <Route path="/application/status" element={<ApplicationStatus />} />
+              </Route>
             </Route>
 
           </Route>
